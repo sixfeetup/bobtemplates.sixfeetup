@@ -1,0 +1,175 @@
+#set $major_version = int($plone_version.split('.')[0])
+#set $pre_plone4 = $major_version < 4
+[buildout]
+find-links =
+#if $project_name
+\# In order to use the private dist URL, you will need the username and
+\# password set up in the \${buildout:directory}/.httpauth file
+\#    https://dist.sixfeetup.com/private/$project_name
+#end if
+    http://dist.sixfeetup.com/public
+    http://dist.plone.org/thirdparty/
+    http://effbot.org/downloads
+
+\# add in the setuptools fixer so that a rogue package
+\# can't break the buildout
+extensions =
+    jarn.setuptoolsfixer
+    mr.developer
+    lovely.buildouthttp
+
+\# we set up base-parts so that we can add in parts in other configs
+base-parts =
+#if $plone_version == '3.1'
+    plone
+#end if
+#if $pre_plone4
+    zope2
+#end if
+    instance
+    zeoserver
+    checkinterval
+    z3c.offlinepack
+    \${buildout:cronjobs}
+
+parts = \${buildout:base-parts}
+
+\# List of cron jobs, usually applied in release configurations like
+\# prod. We default the value here so we can add it into the list of
+\# parts.
+cronjobs = 
+
+\# Extend the version config file
+extends =
+#if $plone_version != '3.1'
+    http://dist.plone.org/release/$plone_version/versions.cfg
+#end if
+    versions.cfg
+versions = versions
+
+#if $unified_buildout
+develop = .
+#end if
+
+[sources]
+\# <name> = <kind> [key=value] <url> [path] [key=value]
+#if $project_name and not $unified_buildout
+\#${project_name}.policy = svn https://svn.sixfeetup.com/svn/private/$project_name/${project_name}.policy/trunk
+\#${project_name}.content = svn https://svn.sixfeetup.com/svn/private/$project_name/${project_name}.content/trunk
+\#${project_name}.theme = svn https://svn.sixfeetup.com/svn/private/$project_name/${project_name}.theme/trunk
+#end if
+
+#if $pre_plone4
+[zope2]
+recipe = plone.recipe.zope2install
+#if $plone_version == '3.1'
+url = \${plone:zope2-url}
+
+#else
+url = \${versions:zope2-url}
+
+#end if
+#if $plone_version == '3.1'
+fake-zope-eggs = true
+skip-fake-eggs = 
+additional-fake-eggs = 
+    ZODB3
+    ZConfig
+    pytz
+
+#end if
+#end if
+#if $plone_version == '3.1'
+[plone]
+recipe = plone.recipe.plone
+
+#end if
+[instance]
+recipe = plone.recipe.zope2instance
+user = $zope_user:$zope_password
+zeo-client = True
+#if $pre_plone4
+zope2-location = \${zope2:location}
+#else
+\# Set the shared blob option so blobs work with zeoserver
+shared-blob = on
+blob-storage = \${zeoserver:blob-storage}
+#end if
+
+\# DO NOT put any other eggs here. Put them in the `install_requires`
+\# of the package that is actually requiring it.
+eggs =
+    Pillow
+    Plone
+\# Make the signal stack always available
+    Products.signalstack
+#if $plone_version == '3.1'
+    \${plone:eggs}
+    elementtree
+#end if
+#if $unified_buildout
+    ${project_name}
+#else if $project_name
+\#    ${project_name}.policy
+#end if
+#if $plone_version == '3.1'
+products = 
+    \${plone:products}
+#end if
+
+\# this should already be the default
+default-zpublisher-encoding = utf-8
+
+\# set the timezone at a bare MINIMUM
+environment-vars = 
+    TZ America/New_York
+    PYTHON_EGG_CACHE \${buildout:directory}/var/.python-eggs
+    PTS_LANGUAGES en
+\#    TMPDIR /var/tmp
+
+[zeoserver]
+#if $pre_plone4
+recipe = plone.recipe.zope2zeoserver
+zope2-location = \${instance:zope2-location}
+#else
+recipe = plone.recipe.zeoserver
+blob-storage = \${buildout:directory}/var/blobstorage
+#end if
+zeo-address = \${instance:zeo-address}
+pack-days = 7
+
+[checkinterval]
+recipe = zc.recipe.egg
+eggs = jarn.checkinterval
+
+[z3c.offlinepack]
+recipe = zc.recipe.egg:scripts
+#if $pre_plone4
+extra-paths = \${zope2:location}/lib/python
+#end if
+
+[cron-dbpack]
+recipe = z3c.recipe.usercrontab
+# Once a week on sunday at midnight
+times = @weekly
+command = \${buildout:bin-directory}/zeopack
+
+[cron-backup]
+recipe = z3c.recipe.usercrontab
+# Once a week on Monday at midnight
+times = 0 0 * * 1
+command = \${buildout:bin-directory}/fullbackup
+
+[plonesite]
+recipe = collective.recipe.plonesite
+instance = instance
+zeoserver = zeoserver
+site-id = $site_name
+admin-user = $zope_user
+#if $include_policy
+profiles-initial = ${project_name}.policy:initial
+profiles = ${project_name}.policy:default
+#else if $project_name
+\#profiles-initial = ${project_name}.policy:initial
+\#profiles = ${project_name}.policy:default
+#end if
