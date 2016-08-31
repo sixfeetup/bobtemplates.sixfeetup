@@ -14,7 +14,7 @@ long_description = '\n\n'.join([
 
 
 setup(
-    name='bobtemplates.unified_buildout',
+    name='bobtemplates.sixfeetup',
     version=version,
     description="Unified buildout template for Plone projects.",
     long_description=long_description,
@@ -32,7 +32,7 @@ setup(
     keywords='web plone zope skeleton project buildout',
     author='Six Feet Up, Inc.',
     author_email='info@sixfeetup.com',
-    url='https://github.com/sixfeetup/bobtemplates.unified_buildout',
+    url='https://github.com/sixfeetup/bobtemplates.sixfeetup',
     license='GPL version 2',
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
