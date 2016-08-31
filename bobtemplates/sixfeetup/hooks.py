@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Render bobtemplates.plone hooks.
+"""Render bobtemplates.sixfeetup hooks.
 """
 from datetime import date
 from mrbob.bobexceptions import SkipQuestion
@@ -14,31 +14,6 @@ import shutil
 import string
 import subprocess
 import sys
-
-
-def to_boolean(configurator, question, answer):
-    """
-    If you want to convert an answer to Python boolean, you can
-    use this function as :ref:`post-question-hook`:
-
-    .. code-block:: ini
-
-        [questions]
-        idiot.question = Are you young?
-        idiot.post_ask_question = mrbob.hooks:to_boolean
-
-    Following variables can be converted to a boolean:
-    **y, n, yes, no, true, false, 1, 0**
-    """
-    if isinstance(answer, bool):
-        return answer
-    value = answer.lower()
-    if value in ['y', 'yes', 'true', '1']:
-        return True
-    elif value in ['n', 'no', 'false', '0']:
-        return False
-    else:
-        raise ValidationError('Value must be a boolean (y/n)')
 
 
 def get_git_info(value):
@@ -128,29 +103,6 @@ def post_ask(configurator):
     if not version:
         return
     _set_plone_version_variables(configurator, version)
-
-
-def post_type(configurator, question, answer):
-    """Skip questions depending on the type answer.
-    """
-    value = validate_choices(configurator, question, answer)
-    if value != u'Dexterity':
-        configurator.variables['package.dexterity_type_name'] = ''
-        configurator.variables['package.dexterity_type_name_lower'] = ''
-    return value
-
-
-def pre_dexterity_type_name(configurator, question):
-    if configurator.variables['package.type'] != 'Dexterity':
-        raise SkipQuestion
-
-
-def post_dexterity_type_name(configurator, question, answer):
-    if keyword.iskeyword(answer):
-        raise ValidationError('%s is a reserved keyword' % answer)
-    if not re.match('[_A-Za-z][_a-zA-Z0-9_]*$', answer):
-        raise ValidationError('%s is not a valid identifier' % answer)
-    return answer
 
 
 def prepare_render(configurator):
