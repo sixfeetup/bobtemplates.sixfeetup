@@ -1,7 +1,5 @@
 [buildout]
 extends = release.cfg
 
-#if $project_name
 [plonesite]
-profiles += ${project_name}.policy:qa
-#end if
+profiles += {{{ project_name }}}.policy:qa

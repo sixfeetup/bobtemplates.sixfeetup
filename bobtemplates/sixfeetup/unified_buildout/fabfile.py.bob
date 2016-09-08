@@ -11,7 +11,7 @@ from sixfeetup.deployment.commands import *
 
 # This is the trac/svn/dist name
 # Default: ""
-env.project_name = "$project_name"
+env.project_name = "{{{ project_name }}}"
 
 # URL to the trac instance base
 # Default: "https://trac.sixfeetup.com"

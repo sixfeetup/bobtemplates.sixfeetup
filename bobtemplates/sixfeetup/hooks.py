@@ -27,7 +27,7 @@ def get_git_info(value):
         pass
 
 
-def validate_packagename(configurator):
+def validate_projectname(configurator):
     """Find out if the name target-dir entered when invoking the command
     can be a valid python-package.
     """
@@ -46,9 +46,9 @@ def validate_packagename(configurator):
         fail = True
 
     if fail:
-        msg = "Error: '{0}' is not a valid packagename.\n".format(package_dir)
-        msg += "Please use a valid name (like collective.myaddon or "
-        msg += "plone.app.myaddon)"
+        msg = "Error: '{0}' is not a valid project name.\n".format(package_dir)
+        msg += "Please use a valid name (like mybuildout or "
+        msg += "myproject.buildout)"
         sys.exit(msg)
 
 
@@ -58,7 +58,7 @@ def pre_username(configurator, question):
     # validate_packagename should be run before asking the first question.
     validate_packagename(configurator)
 
-    default = get_git_info('user.name')
+    default = get_git_info('user_name')
     if default:
         question.default = default
 
@@ -66,7 +66,7 @@ def pre_username(configurator, question):
 def pre_email(configurator, question):
     """Get email from git.
     """
-    default = get_git_info('user.email')
+    default = get_git_info('user_email')
     if default:
         question.default = default
 
