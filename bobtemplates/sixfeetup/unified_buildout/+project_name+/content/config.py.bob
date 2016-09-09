@@ -1,7 +1,7 @@
 """Common configuration constants
 """
 
-PROJECTNAME = '${project_name}.content'
+PROJECTNAME = '{{{ project_name }}}.content'
 
 ADD_PERMISSIONS = {
     # -*- extra stuff goes here -*-

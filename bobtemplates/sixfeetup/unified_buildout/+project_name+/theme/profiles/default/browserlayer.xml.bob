@@ -3,6 +3,6 @@
      so that it will be activated
      when this product is installed. -->
 <layers>
-    <layer name="${project_name}.theme.customization.layer"
-      interface="${project_name}.theme.interfaces.ICustomTheme" />
+    <layer name="{{{ project_name }}}.theme.customization.layer"
+      interface="{{{ project_name }}}.theme.interfaces.ICustomTheme" />
 </layers>

@@ -11,7 +11,7 @@
     expression="not: request/HTTP_X_THEME_ENABLED | nothing"/>
   
  <stylesheet title=""
-    id="++theme++${project_name}.theme/static/main.css"
+    id="++theme++{{{ project_name }}}.theme/static/main.css"
     media="screen" rel="stylesheet" rendering="link"
     cacheable="True" compression="safe" cookable="True"
     enabled="1" expression="request/HTTP_X_THEME_ENABLED"

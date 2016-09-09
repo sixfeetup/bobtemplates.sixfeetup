@@ -3,7 +3,7 @@
 
 <!--
  <javascript
-    id="++theme++${project_name}.theme/static/main.js"
+    id="++theme++{{{ project_name }}}.theme/static/main.js"
     cacheable="False" compression="safe" cookable="False"
     enabled="True" expression=""  inline="False" />
  -->

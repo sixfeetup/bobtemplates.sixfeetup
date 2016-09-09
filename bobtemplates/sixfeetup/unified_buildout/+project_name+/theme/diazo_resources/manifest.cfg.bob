@@ -1,6 +1,6 @@
 [theme]
-title = $project_name theme
-description = Diazo Theme from ${project_name}.theme package
+title = {{{ project_name }}} theme
+description = Diazo Theme from {{{ project_name }}}.theme package
 preview = preview.png
 
 [theme:parameters]

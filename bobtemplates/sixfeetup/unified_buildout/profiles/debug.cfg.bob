@@ -52,7 +52,7 @@ zcml =
 # a IPython Shell for interactive use with zope running.
 # you also need to put
 # https://svn.plone.org/svn/collective/dotipython/trunk/ipy_profile_zope.py
-# to your \$HOME/.ipython directory for the following to work.
+# to your $HOME/.ipython directory for the following to work.
 recipe = zc.recipe.egg
 eggs =
     ipython
@@ -60,12 +60,12 @@ eggs =
 initialization =
     import sys, os
 {{% if pre_plone4 %}}
-    os.environ["SOFTWARE_HOME"] = "\${instance:zope2-location}/lib/python"
+    os.environ["SOFTWARE_HOME"] = "${instance:zope2-location}/lib/python"
 {{% endif %}}
-    os.environ["INSTANCE_HOME"] = "\${instance:location}"
+    os.environ["INSTANCE_HOME"] = "${instance:location}"
     sys.argv[1:1] = "--profile zope2".split()
 {{% if pre_plone4 %}}
-extra-paths = \${instance:zope2-location}/lib/python
+extra-paths = ${instance:zope2-location}/lib/python
 {{% endif %}}
 scripts = ipython=ipzope
 
@@ -73,9 +73,9 @@ scripts = ipython=ipzope
 recipe = zc.recipe.egg
 eggs = ${instance:eggs}
 interpreter = zopepy
-#if $pre_plone4
+{{% if pre_plone4 %}}
 extra-paths = ${instance:zope2-location}/lib/python
-#end if
+{{% endif %}}
 scripts = zopepy
 
 # Here are some more coding tools. pylint analyzes Python source code

@@ -4,15 +4,15 @@
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:plone="http://namespaces.plone.org/plone"
-    i18n_domain="${project_name}.theme">
+    i18n_domain="{{{ project_name }}}.theme">
 
   <include package=".browser" />
 
   <genericsetup:registerProfile
       name="default"
-      title="${project_name or None} Theme"
+      title="{{{ project_name }}} Theme"
       directory="profiles/default"
-      description="Extension profile for ${project_name or None} Theme"
+      description="Extension profile for {{{ project_name }}} Theme"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
