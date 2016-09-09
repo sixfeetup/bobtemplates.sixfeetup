@@ -35,6 +35,7 @@ setup(
         'plone.api',
 {{% if $include_theme %}}
         'z3c.jbot',
+        'plone.app.themingplugins',
 {{% endif %}}
     ],
     entry_points="""
