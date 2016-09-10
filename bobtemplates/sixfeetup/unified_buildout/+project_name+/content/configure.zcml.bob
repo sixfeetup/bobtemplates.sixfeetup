@@ -9,9 +9,9 @@
   <include package=".browser" />
   <include package=".content" />
   <include package=".portlets" />
-  
+
   <five:registerPackage package="." initialize=".initialize" />
-  
+
   <!-- Register the installation GenericSetup extension profile -->
   <genericsetup:registerProfile
       name="default"
@@ -20,7 +20,7 @@
       description="Installation profile for {{{ project_name }}}.content"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
-  
+
   <!-- -*- extra stuff goes here -*- -->
 
 </configure>

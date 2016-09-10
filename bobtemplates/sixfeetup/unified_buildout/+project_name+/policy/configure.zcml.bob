@@ -10,7 +10,7 @@
 
   <!-- Upgrades are handled via its own zcml file -->
   <include file="upgrades.zcml"/>
-  
+
   <five:registerPackage package="." initialize=".initialize" />
 
   <genericsetup:registerProfile

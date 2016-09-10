@@ -2,6 +2,8 @@
 <metadata>
   <version>0001</version>
   <dependencies>
+{{% if pre_plone5  %}}
       <dependency>profile-plone.app.theming:default</dependency>
+{{% endif %}}
   </dependencies>
 </metadata>

@@ -9,7 +9,6 @@ find-links =
 extensions =
     jarn.setuptoolsfixer
     mr.developer
-    lovely.buildouthttp
 
 # we set up base-parts so that we can add in parts in other configs
 base-parts =
@@ -34,7 +33,7 @@ cronjobs =
 
 # Extend the version config file
 extends =
-{{% if plone_version == '3.1' %}}
+{{% if plone_version != '3.1' %}}
     http://dist.plone.org/release/{{{ plone_version }}}/versions.cfg
 {{% endif %}}
     versions.cfg
@@ -104,9 +103,9 @@ eggs =
     ${plone:eggs}
     elementtree
 {{% endif %}}
-{{% if $unified_buildout %}}
+{{% if unified_buildout %}}
     {{{ project_name }}}
-{{% elseif project_name %}}
+{{% elif project_name %}}
 #    {{{ project_name }}}.policy
 {{% endif %}}
 {{% if plone_version == '3.1' %}}
@@ -165,7 +164,7 @@ site-id = {{{ site_name }}}
 admin-user = {{{ zope_user }}}
 {{% if include_policy %}}
 profiles-initial = {{{ project_name }}}.policy:initial
-profiles = {{{ project_name }}}}policy:default
+profiles = {{{ project_name }}}.policy:default
 {{% else %}}
 #profiles-initial = {{{ project_name }}}.policy:initial
 #profiles = {{{ project_name }}}.policy:default

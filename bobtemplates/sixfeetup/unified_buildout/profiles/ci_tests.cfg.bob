@@ -8,7 +8,7 @@ recipe = zc.recipe.testrunner
 # We want to be able to run tests for our development packages and a
 # few central packages:
 eggs = 
-{{% if $unified_buildout %}}
+{{% if unified_buildout %}}
 #    {{{ project_name }}}
 {{% else %}}
 #    {{{ project_name }}}.policy

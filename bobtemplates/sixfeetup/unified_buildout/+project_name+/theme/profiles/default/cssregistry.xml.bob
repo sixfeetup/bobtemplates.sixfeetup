@@ -9,7 +9,7 @@
     expression="not: request/HTTP_X_THEME_ENABLED | nothing"/>
  <stylesheet id="portlets.css"
     expression="not: request/HTTP_X_THEME_ENABLED | nothing"/>
-  
+
  <stylesheet title=""
     id="++theme++{{{ project_name }}}.theme/static/main.css"
     media="screen" rel="stylesheet" rendering="link"
@@ -17,5 +17,5 @@
     enabled="1" expression="request/HTTP_X_THEME_ENABLED"
     applyPrefix="True"/>
  -->
- 
+
 </object>

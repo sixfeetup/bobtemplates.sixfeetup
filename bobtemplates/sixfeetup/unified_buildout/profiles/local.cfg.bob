@@ -9,6 +9,8 @@ unzip = true
 
 {{% if pre_plone4 %}}
 extensions += buildout.dumppickedversions
+{{% else  %}}
+show-picked-versions = true
 {{% endif %}}
 
 # mr.developer settings to always checkout all eggs and force them
@@ -82,6 +84,7 @@ skip-fake-eggs +=
 
 {{% endif %}}
 [instance]
+zeo-address = 8100
 debug-mode = on
 verbose-security = on
 event-log-level = debug

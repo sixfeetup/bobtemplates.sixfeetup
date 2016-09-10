@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """Render bobtemplates.sixfeetup hooks.
 """
-from datetime import date
-
 import os
 import shutil
 import string
@@ -84,13 +82,16 @@ def _set_plone_version_variables(configurator, version):
     configurator.variables['is_plone5'] = False
     configurator.variables['is_plone4'] = False
     configurator.variables['pre_plone4'] = False
+    configurator.variables['pre_plone5'] = False
     configurator.variables['pyflakes_version'] = 'pyflakes'
     # Find out if it is supposed to be Plone 5.
     if version.startswith('5'):
         configurator.variables['is_plone5'] = True
-    if version.startswith('4'):
+    elif version.startswith('4'):
+        configurator.variables['pre_plone5'] = True
         configurator.variables['is_plone4'] = True
     else:
+        configurator.variables['pre_plone5'] = True
         configurator.variables['pre_plone4'] = True
         configurator.variables['pyflakes_version'] = 'pyflakes<=0.4'
     configurator.variables['plone_minor_version'] = ".".join(
@@ -150,6 +151,12 @@ def cleanup_package(configurator):
     if not configurator.variables['include_content']:
         to_delete.extend([
             "{0}/content",
+        ])
+
+    # Plone 5 doesn't use the properties.xml anymore
+    if configurator.variables['is_plone5']:
+        to_delete.extend([
+            "{0}/policy/profiles/qa/properties.xml"
         ])
 
     # remove parts
