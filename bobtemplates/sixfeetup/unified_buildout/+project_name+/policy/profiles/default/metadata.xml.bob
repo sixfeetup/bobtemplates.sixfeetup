@@ -8,5 +8,8 @@
 {{% if include_theme  %}}
         <dependency>profile-{{{ project_name }}}.theme:default</dependency>
 {{% endif %}}
+{{% if pre_plone5  %}}
+        <dependency>profile-plonetheme.sunburst:default</dependency>
+{{% endif %}}
     </dependencies>
 </metadata>

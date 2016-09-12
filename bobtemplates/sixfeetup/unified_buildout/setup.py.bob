@@ -37,6 +37,9 @@ setup(
 {{% if include_theme %}}
         'z3c.jbot',
         'plone.app.themingplugins',
+{{% if pre_plone5 %}}
+        'plonetheme.sunburst',
+{{% endif %}}
 {{% endif %}}
     ],
     entry_points="""
