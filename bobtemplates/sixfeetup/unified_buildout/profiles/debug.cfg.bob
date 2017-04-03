@@ -19,7 +19,6 @@ eggs =
     Products.PrintingMailHost
     Products.DocFinderTab
     Products.DCWorkflowGraph
-    sixfeetup.customfolderalert
 {{% if not pre_plone4 %}}
     plone.app.debugtoolbar
 {{% endif %}}

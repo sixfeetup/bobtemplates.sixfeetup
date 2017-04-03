@@ -103,7 +103,6 @@ zcml += ${debugging:zcml}
 profiles += 
 #    collective.workflowed:default
 #    plone.app.gloworm:default
-    sixfeetup.customfolderalert:default
 {{% if not pre_plone4 %}}
     plone.app.debugtoolbar:default
 {{% endif %}}
