@@ -2,7 +2,7 @@
 Using a custom buildout
 =======================
  
-First step, you will need to copy the ``buildout.cfg_tmpl`` into the
+First step, you will need to copy the ``buildout.cfg.tmpl`` into the
 buildout root, and then select the profile you want to run::
 
  $ cp profiles/buildout.cfg.tmpl buildout.cfg
