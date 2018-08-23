@@ -10,7 +10,7 @@
 
   <genericsetup:registerProfile
       name="default"
-      title="{{{ project_name }}} Theme"
+      title="{{{ project_name }}}.theme (default)"
       directory="profiles/default"
       description="Extension profile for {{{ project_name }}} Theme"
       provides="Products.GenericSetup.interfaces.EXTENSION"

@@ -31,7 +31,7 @@
 
   <genericsetup:upgradeStep
       title="{{{ project_name }}}.run_migration"
-      description="Run migration"
+      description="Run the migration"
       source="0002"
       destination="0003"
       handler="{{{ project_name }}}.migration.upgrades.run_migration"

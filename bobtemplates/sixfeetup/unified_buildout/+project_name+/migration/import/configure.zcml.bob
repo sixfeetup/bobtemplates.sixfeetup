@@ -9,14 +9,14 @@
 
   <transmogrifier:registerConfig
       name="{{{ project_name }}}.import_content"
-      title="Import Underground content"
+      title="{{{ project_name }}}.migration (import)"
       description="This pipeline imports content into a Plone site"
       configuration="import_content.cfg"
       />
 
   <genericsetup:registerProfile
       name="import_content"
-      title="{{{ project_name }}} (content import)"
+      title="{{{ project_name }}}.migration (import)"
       directory="../profiles/import_content"
       description="Content import step for {{{ project_name }}}"
       provides="Products.GenericSetup.interfaces.EXTENSION"
