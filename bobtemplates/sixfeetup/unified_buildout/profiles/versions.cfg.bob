@@ -10,5 +10,5 @@ plone.reload = 1.5
 zope.interface = 3.8.0
 {{% else %}}
 ipython = 4.2.0
-plone.recipe.zope2instance >= 4.4.0
+plone.recipe.zope2instance = 4.4.0
 {{% endif %}}
