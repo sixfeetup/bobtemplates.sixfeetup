@@ -41,7 +41,7 @@ parts =
 
 [tags]
 recipe = z3c.recipe.tag:tags
-eggs = ${instance:eggs}
+eggs = ${instance1:eggs}
 
 [tags-update]
 recipe = plone.recipe.command
@@ -83,7 +83,7 @@ skip-fake-eggs +=
     zope.interface
 
 {{% endif %}}
-[instance]
+[instance1]
 http-address = {{{ development_port }}}
 zeo-address = {{{ development_port + 2000 }}}
 debug-mode = on
@@ -112,7 +112,7 @@ profiles +=
 [zopeskel]
 recipe = zc.recipe.egg
 eggs =
-    ${instance:eggs}
+    ${instance1:eggs}
     PasteScript
     ZopeSkel
     templer.dexterity
@@ -122,16 +122,16 @@ eggs =
 recipe = zc.recipe.egg
 eggs =
     i18ndude
-    ${instance:eggs}
+    ${instance1:eggs}
 {{% if pre_plone4 %}}
-extra-paths = ${instance:zope2-location}/lib/python
+extra-paths = ${instance1:zope2-location}/lib/python
 {{% endif %}}
 
 # NOTE: You will need junction.exe in your path to use this on windows:
 #       http://technet.microsoft.com/en-us/sysinternals/bb896768.aspx
 [omelette]
 recipe = collective.recipe.omelette
-eggs = ${instance:eggs}
+eggs = ${instance1:eggs}
 ignore-develop = True
 ignores = setuptools
 {{% if pre_plone4 %}}

@@ -51,25 +51,25 @@ zcml =
 recipe = zc.recipe.egg
 eggs =
     ipython
-    ${instance:eggs}
+    ${instance1:eggs}
 initialization =
     import sys, os
 {{% if pre_plone4 %}}
-    os.environ["SOFTWARE_HOME"] = "${instance:zope2-location}/lib/python"
+    os.environ["SOFTWARE_HOME"] = "${instance1:zope2-location}/lib/python"
 {{% endif %}}
-    os.environ["INSTANCE_HOME"] = "${instance:location}"
+    os.environ["INSTANCE_HOME"] = "${instance1:location}"
     sys.argv[1:1] = "--profile zope2".split()
 {{% if pre_plone4 %}}
-extra-paths = ${instance:zope2-location}/lib/python
+extra-paths = ${instance1:zope2-location}/lib/python
 {{% endif %}}
 scripts = ipython=ipzope
 
 [zopepy]
 recipe = zc.recipe.egg
-eggs = ${instance:eggs}
+eggs = ${instance1:eggs}
 interpreter = zopepy
 {{% if pre_plone4 %}}
-extra-paths = ${instance:zope2-location}/lib/python
+extra-paths = ${instance1:zope2-location}/lib/python
 {{% endif %}}
 scripts = zopepy
 
@@ -82,7 +82,7 @@ scripts = zopepy
 recipe = zc.recipe.egg 
 eggs =
     pylint
-    ${instance:eggs}
+    ${instance1:eggs}
 entry-points = pylint=pylint.lint:Run 
 scripts = pylint
 arguments = [ 

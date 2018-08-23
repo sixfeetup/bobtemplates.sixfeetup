@@ -19,18 +19,18 @@ case "$1" in
     start)
         echo Starting buildout in $buildout
         $mydir/../bin/zeoserver start
-        $mydir/../bin/instance start
+        $mydir/../bin/instance1 start
         ;;
     
     fg)
         echo Starting buildout in $buildout
         $mydir/../bin/zeoserver start
-        $mydir/../bin/instance fg
+        $mydir/../bin/instance1 fg
         ;;
 
     stop)
         echo Stopping buildout in $buildout
-        $mydir/../bin/instance stop
+        $mydir/../bin/instance1 stop
         $mydir/../bin/zeoserver stop
         ;;
 

@@ -18,7 +18,7 @@ base-parts =
 {{% if pre_plone4 %}}
     zope2
 {{% endif %}}
-    instance
+    instance1
     zeoserver
     checkinterval
     z3c.offlinepack
@@ -80,7 +80,7 @@ additional-fake-eggs =
 recipe = plone.recipe.plone
 
 {{% endif %}}
-[instance]
+[instance1]
 recipe = plone.recipe.zope2instance
 user = {{{ zope_user }}}:{{{ zope_password }}}
 zeo-client = True
@@ -126,12 +126,12 @@ environment-vars =
 [zeoserver]
 {{% if pre_plone4 %}}
 recipe = plone.recipe.zope2zeoserver
-zope2-location = ${instance:zope2-location}
+zope2-location = ${instance1:zope2-location}
 {{% else %}}
 recipe = plone.recipe.zeoserver
 blob-storage = ${buildout:directory}/var/blobstorage
 {{% endif %}}
-zeo-address = ${instance:zeo-address}
+zeo-address = ${instance1:zeo-address}
 pack-days = 7
 
 [checkinterval]
@@ -158,7 +158,7 @@ command = ${buildout:bin-directory}/fullbackup
 
 [plonesite]
 recipe = collective.recipe.plonesite
-instance = instance
+instance = instance1
 zeoserver = zeoserver
 site-id = {{{ site_name }}}
 admin-user = {{{ zope_user }}}
