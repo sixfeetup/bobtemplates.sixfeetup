@@ -3,14 +3,14 @@ Using a custom buildout
 =======================
  
 First step, you will need to copy the ``buildout.cfg_tmpl`` into the
-buildout root, and then select the profile you want to run::
+buildout root, and edit to uncomment the profile you want to run::
 
  $ cp profiles/buildout.cfg.tmpl buildout.cfg
  $ vi buildout.cfg
 
 Then you need to run::
 
- $ virtualenv env
+ $ virtualenv env --python=python2.7
  
 This will create an env directory with a virtual environment. You should then
 install the versions of zc.buildout and setuptools you need:

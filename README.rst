@@ -21,6 +21,9 @@ Theme
 Content
     Adds a content package for new Dexterity based content types.
 
+Migration
+    A starting point for creating a transmogrifier import pipeline.
+
 
 Installation
 ------------
@@ -50,6 +53,7 @@ To contribute to these templates, clone the repository then in the package folde
 
     $ virtualenv --clear .
     $ ./bin/python setup.py develop
+    $ ./bin/mrbob -O myproject bobtemplates.sixfeetup:unified_buildout
 
 
 Contribute

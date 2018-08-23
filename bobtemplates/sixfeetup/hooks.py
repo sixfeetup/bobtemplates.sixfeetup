@@ -129,6 +129,11 @@ def cleanup_package(configurator):
             "{0}/content",
         ])
 
+    if not configurator.variables['include_migration']:
+        to_delete.extend([
+            "{0}/migration",
+        ])
+
     # Plone 5 doesn't use the properties.xml anymore
     if configurator.variables['is_plone5']:
         to_delete.extend([
