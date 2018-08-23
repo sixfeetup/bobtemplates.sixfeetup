@@ -20,4 +20,3 @@ lib/
 local/
 *.pyc
 *.egg-info/
-.idea
