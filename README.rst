@@ -43,6 +43,15 @@ Now you can use it like this::
 See `the documentation of mr.bob <http://mrbob.readthedocs.org/en/latest/>`_  for further information.
 
 
+Development
+-----------
+
+To contribute to these templates, clone the repository then in the package folder create a virtualenv and install the package::
+
+    $ virtualenv --clear .
+    $ ./bin/python setup.py develop
+
+
 Contribute
 ----------
 
