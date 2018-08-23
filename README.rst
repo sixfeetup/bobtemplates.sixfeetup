@@ -16,7 +16,7 @@ Policy
     The package contains a policy package.
 
 Theme
-    Adds a simple bootstrap-based Diazo theme package.
+    Adds a Diazo theme package based on Barceloneta.
 
 Content
     Adds a content package for new Dexterity based content types.
