@@ -23,9 +23,6 @@ eggs =
     plone.app.debugtoolbar
 {{% endif %}}
 #    ipdb
-# XXX READ THE PRODUCT PAGE BEFORE ENABLING
-# Gloworm + CacheFu may cause issues
-#    Products.Gloworm
 # The following might be useful, uncomment them if needed
 #    Products.ZopeProfiler
 #    Products.Clouseau
@@ -41,7 +38,6 @@ zcml =
     plone.reload
 #    zope.testrecorder
 #    collective.workflowed
-    sixfeetup.customfolderalert
 
 {{% endif %}}
 # Here are some interactive shells.  one based on IPython that loads up like zopectl debug
