@@ -3,7 +3,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-version = '1.0'
+version = '1.1'
 
 
 long_description = '\n\n'.join([
