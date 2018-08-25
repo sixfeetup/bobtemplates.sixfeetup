@@ -20,3 +20,4 @@ lib/
 local/
 *.pyc
 *.egg-info/
+**/node_modules/

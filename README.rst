@@ -16,10 +16,13 @@ Policy
     The package contains a policy package.
 
 Theme
-    Adds a simple bootstrap-based Diazo theme package.
+    Adds a Diazo theme package based on Barceloneta.
 
 Content
     Adds a content package for new Dexterity based content types.
+
+Migration
+    A starting point for creating a transmogrifier import pipeline.
 
 
 Installation
@@ -41,6 +44,16 @@ Now you can use it like this::
     $ mrbob -O myproject bobtemplates.sixfeetup:unified_buildout
 
 See `the documentation of mr.bob <http://mrbob.readthedocs.org/en/latest/>`_  for further information.
+
+
+Development
+-----------
+
+To contribute to these templates, clone the repository then in the package folder create a virtualenv and install the package::
+
+    $ virtualenv --clear .
+    $ ./bin/python setup.py develop
+    $ ./bin/mrbob -O myproject bobtemplates.sixfeetup:unified_buildout
 
 
 Contribute

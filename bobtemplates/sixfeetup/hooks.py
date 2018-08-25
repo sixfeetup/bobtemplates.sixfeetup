@@ -47,30 +47,6 @@ def pre_site_name(configurator, question):
     validate_projectname(configurator)
 
 
-def pre_username(configurator, question):
-    """Get email from git and validate package name.
-    """
-    default = get_git_info('github.user')
-    if default:
-        question.default = default
-
-
-def pre_name(configurator, question):
-    """Get name from git and validate package name.
-    """
-    default = get_git_info('user.name')
-    if default:
-        question.default = default
-
-
-def pre_email(configurator, question):
-    """Get email from git.
-    """
-    default = get_git_info('user.email')
-    if default:
-        question.default = default
-
-
 def post_plone_version(configurator, question, answer):
     """Find out what version of Plone we want
     """
@@ -151,6 +127,11 @@ def cleanup_package(configurator):
     if not configurator.variables['include_content']:
         to_delete.extend([
             "{0}/content",
+        ])
+
+    if not configurator.variables['include_migration']:
+        to_delete.extend([
+            "{0}/migration",
         ])
 
     # Plone 5 doesn't use the properties.xml anymore

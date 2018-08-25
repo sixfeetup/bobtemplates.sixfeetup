@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<registry>
+    <records prefix="plone.bundles/{{{ project_name }}}-bundle" interface='Products.CMFPlone.interfaces.IBundleRegistry'>
+        <value key="enabled">True</value>
+        <value key="jscompilation">++theme++{{{ project_name }}}.theme/static/dist/theme-compiled.min.js</value>
+        <value key="csscompilation">++theme++{{{ project_name }}}.theme/static/dist/theme-compiled.min.css</value>
+        <value key="compile">False</value>
+        <value key="depends">plone,plone-logged-in</value>
+        <value key="last_compilation">2018-08-24 09:00:00</value>
+    </records>
+</registry>
