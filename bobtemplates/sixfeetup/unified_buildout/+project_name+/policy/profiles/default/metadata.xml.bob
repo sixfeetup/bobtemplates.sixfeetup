@@ -6,8 +6,12 @@
 {{% if include_content  %}}
         <dependency>profile-{{{ project_name }}}.content:default</dependency>
 {{% endif %}}
-{{% if include_theme  %}}
+{{% if is_plone5 %}}
+{{% if include_theme %}}
         <dependency>profile-{{{ project_name }}}.theme:default</dependency>
+{{% else %}}
+        <dependency>profile-plonetheme.barceloneta:default</dependency>
+{{% endif %}}
 {{% endif %}}
 {{% if pre_plone5  %}}
         <dependency>profile-plonetheme.sunburst:default</dependency>
