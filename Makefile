@@ -10,7 +10,9 @@ TO_CLEAN = .venv myproject
 ## Top level targets
 
 .PHONY: build
-build: myproject
+build: .venv/bin/mrbob myproject/.git
+	git checkout develop
+	.venv/bin/mrbob -O "myproject" -n bobtemplates.sixfeetup:unified_buildout
 	$(MAKE) -C myproject "$(@)"
 
 .PHONY: test
@@ -35,14 +37,10 @@ clean:
 .venv/bin/mrbob: .venv
 	.venv/bin/pip install -e .
 
-myproject/.git: myproject
+myproject/.git:
 	git init myproject
 	touch myproject/.gitignore
 	cd myproject && \
 		git add .gitignore && \
 		git commit -m "Allow branch creation" && \
 		git checkout -b develop
-
-.PHONY: myproject
-myproject: .venv/bin/mrbob myproject/.git
-	.venv/bin/mrbob -O "$(@)" -n bobtemplates.sixfeetup:unified_buildout
