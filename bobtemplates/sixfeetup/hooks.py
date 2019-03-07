@@ -108,7 +108,7 @@ def cleanup_package(configurator):
     """
     # path for normal packages in a unified buildut (project/project/content)
     base_path = "{0}/{1}".format(
-        configurator.variables['project_name'],
+        configurator.target_directory,
         configurator.variables['project_name'])
 
     # find out what to delete
