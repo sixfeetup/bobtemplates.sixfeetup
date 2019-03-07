@@ -7,7 +7,7 @@
 #DEPLOY_DIR = /srv/prod.example.com
 
 ## Option Variables
-# Set to non-zero to overwrite local data changes from DATA_HOST, e.g:
+# Set to non-empty to overwrite local data changes from DATA_HOST, e.g:
 # $ make DATA_OVERWRITE=true data
 #DATA_OVERWRITE = true
 
