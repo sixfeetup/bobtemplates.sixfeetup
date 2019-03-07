@@ -51,9 +51,7 @@ Development
 
 To contribute to these templates, clone the repository then in the package folder create a virtualenv and install the package::
 
-    $ virtualenv --clear .
-    $ ./bin/python setup.py develop
-    $ ./bin/mrbob -O myproject bobtemplates.sixfeetup:unified_buildout
+    $ make
 
 
 Contribute
