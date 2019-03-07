@@ -35,10 +35,11 @@ clean:
 .venv/bin/mrbob: .venv
 	.venv/bin/pip install -e .
 
-myproject/.git:
+myproject/.git: myproject
 	git init myproject
+	touch myproject/.gitignore
 	cd myproject && \
-		git add Makefile && \
+		git add .gitignore && \
 		git commit -m "Allow branch creation" && \
 		git checkout -b develop
 
