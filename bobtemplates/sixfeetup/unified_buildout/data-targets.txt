@@ -1,0 +1,3 @@
+var/filestorage/Data.fs
+var/filestorage/Data.fs.index
+var/blobstorage

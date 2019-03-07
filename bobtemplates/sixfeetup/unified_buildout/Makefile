@@ -1,14 +1,38 @@
 ### Local development environment set up
 
-## Variables
+## Project-specific variables, set before running
+# Set to the SSH host from which to rsync the project data:
+#DATA_HOST = prod.example.com
+# Set to the directory where this project is deployed on DATA_HOST:
+#DEPLOY_DIR = /srv/prod.example.com
+
+## Option Variables
+# Set to non-zero to overwrite local data changes from DATA_HOST, e.g:
+# $ make DATA_OVERWRITE=true data
+#DATA_OVERWRITE = true
 
 # Constants
 TO_CLEAN = var/filestorage var/blobstorage parts buildout.cfg env
 
+## Dynamic variables
+ifndef DATA_OVERWRITE
+	DATA_RSYNC_OPTS = --append-verify
+endif
+BUILD_PREREQS = bin/instance1
+ifdef DEPLOY_DIR
+ifdef DATA_HOST
+BUILD_PREREQS += data
+endif
+endif
+
+
 ## Top level targets
 
 .PHONY: build
-build: bin/instance
+build: $(BUILD_PREREQS)
+
+.PHONY: data
+data: bin/instance1 rsync-zodb
 
 .PHONY: run
 run: build
@@ -58,3 +82,19 @@ bin/instance1: \
 		requirements.txt env/bin/buildout \
 		setup.py buildout.cfg profiles/*.cfg
 	env/bin/buildout
+
+# Copy the project data
+ifdef DATA_HOST
+.PHONY: ssh-copy-ids
+ssh-copy-ids:
+	ssh -o "PasswordAuthentication no" -o "ConnectTimeout 5" \
+		$(DATA_HOST) true || \
+		ssh-copy-id -o "ConnectTimeout 5" $(DATA_HOST)
+ifdef DEPLOY_DIR
+.PHONY: rsync-zodb
+rsync-zodb: ssh-copy-ids data-targets.txt
+	rsync -vzPrlptD --rsync-path="sudo rsync" \
+		--inplace $(DATA_RSYNC_OPTS) --files-from=data-targets.txt \
+		$(DATA_HOST):$(DEPLOY_DIR)/ ./
+endif
+endif
