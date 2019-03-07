@@ -3,6 +3,7 @@ pipeline =
     jsonsource
     pathfixer
 #    example
+    removeid
     constructor
     copyuid
     deserializer
@@ -20,6 +21,10 @@ stripstring = /Plone
 
 [example]
 blueprint = {{{ project_name }}}.example
+
+[removeid]
+blueprint = collective.transmogrifier.sections.manipulator
+delete = id
 
 [constructor]
 blueprint = collective.transmogrifier.sections.constructor
