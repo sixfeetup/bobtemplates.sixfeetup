@@ -1,5 +1,7 @@
 ### Local development environment set up
 
+SHELL=/usr/bin/env bash -o pipefail
+
 ## Project-specific variables, set before running
 
 # Set to the SSH host from which to rsync the project data:
