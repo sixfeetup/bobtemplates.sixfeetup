@@ -35,5 +35,12 @@ clean:
 .venv/bin/mrbob: .venv
 	.venv/bin/pip install -e .
 
-myproject: .venv/bin/mrbob
+myproject/.git:
+	git init myproject
+	cd myproject && \
+		git add Makefile && \
+		git commit -m "Allow branch creation" && \
+		git checkout -b develop
+
+myproject: .venv/bin/mrbob myproject/.git
 	.venv/bin/mrbob -O "$(@)" -n bobtemplates.sixfeetup:unified_buildout
