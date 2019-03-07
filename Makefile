@@ -10,9 +10,8 @@ TO_CLEAN = .venv myproject
 ## Top level targets
 
 .PHONY: build
-build: .venv/bin/mrbob myproject/.git
+build: .venv/bin/mrbob myproject/.git myproject/Makefile
 	git checkout develop
-	.venv/bin/mrbob -O "myproject" -n bobtemplates.sixfeetup:unified_buildout
 	$(MAKE) -C myproject "$(@)"
 
 .PHONY: test
@@ -44,3 +43,10 @@ myproject/.git:
 		git add .gitignore && \
 		git commit -m "Allow branch creation" && \
 		git checkout -b develop
+myproject/Makefile: \
+		bobtemplates/sixfeetup/* bobtemplates/sixfeetup/*/* \
+		bobtemplates/sixfeetup/*/*/* bobtemplates/sixfeetup/*/*/*/* \
+		bobtemplates/sixfeetup/*/*/*/*/* \
+		bobtemplates/sixfeetup/*/*/*/*/*/*
+	.venv/bin/mrbob -O "myproject" \
+		-n bobtemplates.sixfeetup:unified_buildout
