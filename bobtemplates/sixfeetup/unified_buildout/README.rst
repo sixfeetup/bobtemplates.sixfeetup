@@ -2,9 +2,9 @@
 Using a custom buildout
 =======================
 
-The ``Makefile`` should build the local development environment, copy the
-project data if available, and start all the processes necessary to work with
-the site on ``localhost``::
+The ``Makefile`` should build the local development environment, optionally
+copy the project data, and start all the processes necessary to work with the
+site on ``localhost``::
 
  $ make run
 

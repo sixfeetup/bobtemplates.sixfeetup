@@ -7,6 +7,10 @@
 #DEPLOY_DIR = /srv/prod.example.com
 
 ## Option Variables
+# Set to non-empty to enable downloading/syncing project data.
+# Requires setting DATA_HOST and DEPLOY_DIR above.
+# $ make DATA_DOWNLOAD=true data
+#DATA_DOWNLOAD = true
 # Set to non-empty to overwrite local data changes from DATA_HOST, e.g:
 # $ make DATA_OVERWRITE=true data
 #DATA_OVERWRITE = true
@@ -19,10 +23,8 @@ ifndef DATA_OVERWRITE
 	DATA_RSYNC_OPTS = --append-verify
 endif
 BUILD_PREREQS = bin/instance1
-ifdef DEPLOY_DIR
-ifdef DATA_HOST
+ifdef DATA_DOWNLOAD
 BUILD_PREREQS += data
-endif
 endif
 
 
@@ -84,17 +86,15 @@ bin/instance1: \
 	env/bin/buildout
 
 # Copy the project data
-ifdef DATA_HOST
+ifdef DATA_DOWNLOAD
 .PHONY: ssh-copy-ids
 ssh-copy-ids:
 	ssh -o "PasswordAuthentication no" -o "ConnectTimeout 5" \
 		$(DATA_HOST) true || \
 		ssh-copy-id -o "ConnectTimeout 5" $(DATA_HOST)
-ifdef DEPLOY_DIR
 .PHONY: rsync-zodb
 rsync-zodb: ssh-copy-ids data-targets.txt
 	rsync -vzPrlptD --rsync-path="sudo rsync" \
 		--inplace $(DATA_RSYNC_OPTS) --files-from=data-targets.txt \
 		$(DATA_HOST):$(DEPLOY_DIR)/ ./
-endif
 endif
