@@ -12,6 +12,9 @@ TO_CLEAN = .venv myproject
 .PHONY: build
 build: .venv/bin/mrbob myproject/.git myproject/Makefile
 	git checkout develop
+	read -p \
+		"Make any desired changes in myproject/ before running make and hit return:" \
+		ignored
 	$(MAKE) -C myproject "$(@)"
 
 .PHONY: test
