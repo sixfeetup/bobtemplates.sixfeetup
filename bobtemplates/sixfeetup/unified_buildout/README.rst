@@ -1,43 +1,16 @@
 =======================
 Using a custom buildout
 =======================
- 
-First step, you will need to copy the ``buildout.cfg.tmpl`` into the
-buildout root, and edit to uncomment the profile you want to run::
 
- $ cp profiles/buildout.cfg.tmpl buildout.cfg
- $ vi buildout.cfg
+The ``Makefile`` should build the local development environment, copy the
+project data if available, and start all the processes necessary to work with
+the site on ``localhost``::
 
-Then you need to run::
-
- $ virtualenv env --python=python2.7
- 
-This will create an env directory with a virtual environment. You should then
-install the versions of zc.buildout and setuptools you need:
-
- $ env/bin/pip install -r requirements.txt
-
-To create an instance, you can use the buildout script in `env/bin/buildout`,
-or run bootstrap to create the buildout script in `bin`::
-
- $ env/bin/buildout bootstrap
- $ bin/buildout
-
-This will download Plone's eggs and products for you, as well as other
-dependencies, create a new Zope 2 installation, and create a new Zope instance
-configured with these products.
-
-You can start your Zope instance by running::
-
- $ bin/instance start
-
-or, to run in foreground mode::
-
- $ bin/instance fg
+ $ make run
 
 To run unit tests, you can use::
 
- $ bin/instance test -s my.package
+ $ make test
 
 Installing PIL
 --------------
