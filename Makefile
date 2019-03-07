@@ -36,4 +36,4 @@ clean:
 	.venv/bin/pip install -e .
 
 myproject: .venv/bin/mrbob
-	.venv/bin/mrbob -O "$(@)" bobtemplates.sixfeetup:unified_buildout
+	.venv/bin/mrbob -O "$(@)" -n bobtemplates.sixfeetup:unified_buildout
