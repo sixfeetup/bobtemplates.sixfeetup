@@ -15,7 +15,7 @@ parts =
 #     http://<zope host>:<zope port>/++resource++recorder/index.html
 eggs =
     plone.reload
-    Products.PDBDebugMode
+    Products.PDBDebugMode<1.4
     Products.PrintingMailHost
     Products.DocFinderTab
     Products.DCWorkflowGraph
