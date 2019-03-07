@@ -22,23 +22,23 @@ or run bootstrap to create the buildout script in `bin`::
 
  $ env/bin/buildout bootstrap
  $ bin/buildout
- 
-This will download Plone's eggs and products for you, as well as other 
+
+This will download Plone's eggs and products for you, as well as other
 dependencies, create a new Zope 2 installation, and create a new Zope instance
 configured with these products.
 
 You can start your Zope instance by running::
 
  $ bin/instance start
- 
+
 or, to run in foreground mode::
 
  $ bin/instance fg
- 
+
 To run unit tests, you can use::
 
  $ bin/instance test -s my.package
- 
+
 Installing PIL
 --------------
 
@@ -52,8 +52,8 @@ Buildout will use your system Python installation by default. However, Zope
 which version of Python you have, by running::
 
  $ python -V
- 
-If that is not a 2.4 version, you need to install Python 2.4 from 
+
+If that is not a 2.4 version, you need to install Python 2.4 from
 http://python.org. If you wish to keep another version as your main system
 Python, edit buildout.cfg and add an 'executable' option to the "[buildout]"
 section, pointing to a python interpreter binary::
@@ -61,16 +61,16 @@ section, pointing to a python interpreter binary::
  [buildout]
  ...
  executable = /path/to/python
- 
+
 Working with buildout.cfg
 -------------------------
 
 You can change any option in buildout.cfg and re-run bin/buildout to reflect
 the changes. This may delete things inside the 'parts' directory, but should
-keep your Data.fs and source files intact. 
+keep your Data.fs and source files intact.
 
-To save time, you can run buildout in "offline" (-o) and non-updating (-N) 
-mode, which will prevent it from downloading things and checking for new 
+To save time, you can run buildout in "offline" (-o) and non-updating (-N)
+mode, which will prevent it from downloading things and checking for new
 versions online::
 
  $ bin/buildout -Nov
@@ -102,16 +102,16 @@ debug.cfg
   package to make note of is PDBDebugMode.  It will open up a pdb prompt
   anytime there is an error.  This will cause the page to hang until you tell
   pdb to (c)ontinue.
-  
+
   The debug config also contains a way to 'refresh' your product in
   plone.reload.  You can access it like this::
-  
+
     http://<zope_host>:<zope_port>/@@reload
-  
+
   And also a way of recording doctests::
-  
+
     http://<zope_host>:<zope_port>/++resource++recorder/index.html
-  
+
   Take a look at the config to see what other tools are available.
 
 release.cfg
@@ -145,7 +145,7 @@ uploaded to the Python Package Index, aka PYPI) should be placed in src. You can
 
  $ cd src/
  $ paster create -t plone my.package
- 
+
 Use "paster create --list-templates" to see all available templates. Answer
 the questions and you will get a new egg. Then tell buildout about your egg
 by editing buildout.cfg and adding your source directory to 'develop'::
@@ -154,7 +154,7 @@ by editing buildout.cfg and adding your source directory to 'develop'::
  ...
  develop =
     src/my.package
-    
+
 You can list multiple packages here, separated by whitespace or indented
 newlines.
 
@@ -174,12 +174,12 @@ automatically. Just add the package to the 'zcml' option::
  ...
  zcml =
     my.package
-    
-When you are finished, re-run buildout. Offline, non-updating mode should 
+
+When you are finished, re-run buildout. Offline, non-updating mode should
 suffice::
 
  $ bin/buildout -Nov
- 
+
 Developing old-style products
 -----------------------------
 
@@ -199,18 +199,18 @@ These products are only available in the profiles/local.cfg::
 To release your old style products you'll need to tag them and then enable the
 ``[products-release]`` part in the profiles/release.cfg::
 
- release-parts = 
+ release-parts =
      products-release
      ${buildout:base-parts}
 
  [products-release]
  recipe = plone.recipe.distros
- urls = 
+ urls =
     https://dist.sixfeetup.com/private/my-project/MyProduct.tgz
 
  [instance]
  ...
- products = 
+ products =
      ${instance:base-products}
      ${products-release:location}
 
@@ -224,7 +224,7 @@ to do is to add it to the "eggs" option under the main ``[buildout]`` section::
  ...
  eggs =
     my.package
-    
+
 If it's listed somewhere else than the Python Package Index, you can add a link
 telling buildout where to find it in the 'find-links' option::
 
@@ -235,11 +235,11 @@ telling buildout where to find it in the 'find-links' option::
     http://download.zope.org/distribution/
     http://effbot.org/downloads
     http://some.host.com/packages
-    
+
 Using existing old-style products
 ---------------------------------
 
-If you are using an old-style (non-egg) product, you can either add it as an 
+If you are using an old-style (non-egg) product, you can either add it as an
 automatically downloaded archive or put it in the top-level "products" folder.
 The former is probably better, because it means you can redistribute your
 buildout.cfg more easily::
@@ -259,15 +259,15 @@ add it as a "nested package"::
     http://plone.org/products/someproduct/releases/1.3/someproduct-1.3.tar.gz
  nested-packages =
     someproduct-1.3.tar.gz
- 
-Alternatively, if it extracts to a directory which contains the version 
+
+Alternatively, if it extracts to a directory which contains the version
 number, add it as a "version suffix package"::
 
  [third-party]
  recipe = plone.recipe.distros
  urls =
     http://plone.org/products/someproduct/releases/1.3/someproduct-1.3.tar.gz
- version-suffix-packages = 
+ version-suffix-packages =
     someproduct-1.3.tar.gz
 
  [buildout]
@@ -283,7 +283,7 @@ Note that "third-party" comes before the "instance" part::
  [myproduct]
  recipe = plone.recipe.bundlecheckout
  url = http://svn.plone.org/svn/collective/myproduct/trunk
- 
+
 Finally, you need to tell Zope to find this new checkout and add it to its
 list of directories that are scanned for products::
 
@@ -292,8 +292,8 @@ list of directories that are scanned for products::
  products =
     ${buildout:directory}/products
     ${third-party:location}
-    
-Without this last step, the "myproduct" part is simply managing an svn 
+
+Without this last step, the "myproduct" part is simply managing an svn
 checkout and could potentially be used for something else instead.
 
 
@@ -340,7 +340,7 @@ Python
 - You can test if this was successful by opening a new shell (cmd) and type
   in 'python -V'. It should report version 2.4.4 (or whichever version you
   installed).
-  
+
   Opening a new shell can be done quickly by using the key combination
   'Windows-r' or if you are using Parallels on a Mac 'Apple-r'. Type in 'cmd'
   into the popup box that opens up and hit enter.
