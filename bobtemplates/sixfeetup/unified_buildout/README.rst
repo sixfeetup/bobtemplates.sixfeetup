@@ -297,6 +297,173 @@ Without this last step, the "myproduct" part is simply managing an svn
 checkout and could potentially be used for something else instead.
 
 
+=============================================
+Makefile
+=============================================
+What to put in the ``Makefile``, why and how.
+---------------------------------------------
+
+The main goal of the ``Makefile`` is to capture in version control any steps
+required for local development in an executable and repeatable way.
+Documentation of those steps, such as in wiki, easily gets out of date.  An
+individual developer will run into an issue, make a few attempts at addressing
+it, and some combination of those attempts will resolve the issue.  Now that
+the developer is able to proceed, do they take the extra time to update the
+``README``, let alone a wiki?  What would they update it with if they're not
+sure which combination of steps addressed the issue?  If the attempts were
+made in an executable form that can be captured in VCS, they're much easier
+and faster to capture and therefor much more likely to be captured.
+
+Local development is, pragmatically speaking, notoriously fragile.  Seldom do
+two runs of the set up process succeed without at least one issue, even when
+run on the same machine.  This is true across many languages, frameworks, and
+systems.  As such perfection is not the goal of the ``Makefile``.  Rather the
+goal is to make solutions to local development issues much more *likely* to be
+captured and much more *likely* to be executable.  For example, if doing an
+ad-hoc maintenance task, add a target to the ``Makefile`` with the commands
+you'd otherwise be typing in your shell.  Iterate by invoking make to run that
+target, ``$ make foo``, then change the commands under that target in the
+``Makefile``, repeat until it works for you, then commit the new target in
+VCS.  There's no need to make sure it's repeatable by everyone, it's enough
+that it's discover-able.  If another developer needs something similar, then
+*they* can iterate similarly and capture their changes in VCS.  This way we
+can document more and approach repeatability over time while costing little
+extra time.
+
+How to add or change targets
+============================
+
+Start by understanding `the fundamentals of Makefile`_:
+
+  * If a recipe actually generates files and/or directories, then the target
+    should be a real target referring to the most relevant thing that recipe
+    generates.  For example:
+
+    * The main reason to run ``virtualenv env`` is to generate
+      ``env/bin/python`` so that should be the target.
+    * The main reason to run ``env/bin/pip install -r requirements.txt`` may
+      be to generate ``env/bin/buildout`` so that should be the target.
+
+  * Use prerequisites for the target whenever possible to avoid running
+    recipes unnecessarily.  For example:
+
+    * Running ``env/bin/pip install -r requirements.txt`` requires that
+      the ``virtualenv`` has been created, and we want it to be run again
+      if ``requirements.txt`` has changed so the prerequisites should
+      be ``env/bin/python requirements.txt``.
+    * Running ``env/bin/buildout`` requires that the
+      ``requirements.txt`` have been installed, that ``buildout.cfg`` has been
+      created and should be run again if any of ``profiles/*.cfg`` have
+      changed so those should be the prerequisites.
+
+  * Understand how ``make`` uses the modification time stamps of the target
+    and it's prerequisites to decide which recipes need to be run.
+
+  * Use separate ``Makefile`` files together in the relevant directories to
+    keep changes close to related changes in VCS.  For example, if the project
+    has a back-end REST API and front-end UI, put the API set up in
+    ``api/Makefile`` and the front-end set up in ``ui/Makefile`` and invoke
+    their targets as appropriate in the recipes of the top-level
+    ``Makefile``::
+
+      .PHONY: build
+      build:
+	  $(MAKE) -C api build
+	  $(MAKE) -C ui build
+
+      .PHONY: run-api
+      run-api:
+	  $(MAKE) -C api run
+      .PHONY: run-ui
+      run-ui:
+	  $(MAKE) -C ui run
+
+  * Use ``$(@)`` to refer to the target in the recipe.
+
+When adding a target whose recipe doesn't generate any meaningful files and/or
+directories or whose recipe commands should be run every time, then use `a
+phony target`_, such as for a ``run`` target that runs development servers or
+a ``test`` target that runs the tests.  This tells ``make`` not to expect the
+recipe to generate anything in particular.
+
+You may also use the ``-j`` option to tell ``make`` how many targets to run
+simultaneously.  This can be an easy way to run multiple processes at once,
+such as to run a back-end web server and a front-end web server::
+
+  .PHONY: run
+  run:
+      $(MAKE) -j 2 run-zope run-webpack
+  .PHONY: run-zope
+  run-zope:
+      bin/instance fg
+  .PHONY: run-webpack
+  run-webpack:
+      npx webpack
+
+That way a developer may run both processes in the same shell seeing all
+console output in one shell or may run them in separate shells for separate
+output or so that one process can be restarted separately.
+
+If a target's commands are getting long or require more logic than is
+convenient in the ``Makefile``, such as loops or anything but the simplest
+conditionals, put the commands in a script (shell, Python, etc.), and invoke
+that script in the target's recipe.
+
+If a recipe doesn't create any meaningful files or directories that can be
+used as a target, or the modification times of those files and/or directories
+aren't updated leading to the recipe always being run, you can use ``tee`` to
+write a log file.  Be sure to ``touch`` one of the prerequisites on failure so
+that the recipe will be run again next time in that case::
+
+  bin/instance: var/log env/bin/buildout
+      env/bin/buildout | tee -a var/log/buildout.log \
+	  || touch env/bin/buildout
+
+How to invoke ``make``
+======================
+
+Invoking ``$ make`` with out specifying a target will run the default target
+which should be the target to "build" everything without "running" the project.
+IOW, without running a development server, tests, etc..  Invoking make with
+targets, such as ``$ make test run`` will run those targets in sequence.
+
+Variables in the ``Makefile`` can also be overridden on the command line.
+This can be used to modify the execution of a target providing a sort of
+option system.  For example, the default ``Makefile`` build may copy project
+data from PROD and won't overwrite local data with project data on each run so
+the developer can work with changed data without constantly repeating those
+changes.  If there's an issue on TESTING caused by differences in the data,
+however, variables could be used to tell ``make`` to overwrite local data and
+to do so specifically with data from TESTING so the issue can be reproduced
+and debugged locally::
+
+  $ make DATA_RSYNC_OPTS= DATA_HOST=testing.example.com run
+
+Why use ``make``?
+=================
+
+Adding a shell script for each local development step or task is too much
+overhead for most of such steps.  ``Makefile`` also has a rudimentary
+"dependency" system it uses to figure out which steps to run which can be used
+to avoid running unnecessary steps which saves developer time and
+interruptions.  Also, adding a set of arbitrary shell commands to a
+``Makefile`` has much less overhead than adding them to other systems such as
+`zc.buildout`_, `webpack`_, `gulp`_.  Finally, ``make`` is available pretty
+much everywhere so there are essentially no external dependency issues.
+
+Unfortunately, tabs are required by ``make``, so it is recommended that you
+configure your editor to represent tab characters with how ever many spaces
+you prefer.
+
+.. _`zc.buildout`: http://www.buildout.org
+.. _`webpack`: https://webpack.js.org
+.. _`gulp`: https://gulpjs.com
+
+.. _`the fundamentals of Makefile`:
+   https://www.gnu.org/software/make/manual/html_node/Rule-Introduction.html
+.. _`a phony target`:
+   https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html
+
 
 =============
 Using Windows
