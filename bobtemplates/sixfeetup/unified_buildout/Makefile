@@ -3,6 +3,8 @@
 ## Project-specific variables, set before running
 # Set to the SSH host from which to rsync the project data:
 #DATA_HOST = prod.example.com
+# Uncomment if rsync should be run as root on the DATA_HOST:
+#DATA_HOST_RSYNC_PATH = --rsync-path="sudo rsync"
 # Set to the directory where this project is deployed on DATA_HOST:
 #DEPLOY_DIR = /srv/prod.example.com
 
@@ -96,5 +98,6 @@ ssh-copy-ids:
 rsync-zodb: ssh-copy-ids data-targets.txt
 	rsync -vzPrlptD --rsync-path="sudo rsync" \
 		--inplace $(DATA_RSYNC_OPTS) --files-from=data-targets.txt \
+		$(DATA_HOST_RSYNC_PATH) \
 		$(DATA_HOST):$(DEPLOY_DIR)/ ./
 endif
