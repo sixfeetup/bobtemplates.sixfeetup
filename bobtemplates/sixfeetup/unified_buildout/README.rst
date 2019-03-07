@@ -303,6 +303,14 @@ that it's discover-able.  If another developer needs something similar, then
 can document more and approach repeatability over time while costing little
 extra time.
 
+There are ways to parameterize and share code between recipes when multiple
+developers are doing similar but different tasks, see below in `How to add or
+change targets`_.  OTOH, if you're going too far down either of those routes
+it's probably a sign that the task is a real requirement, not the kind of
+ad-hoc task our use of ``Makefile`` is intended for.  In that case, it's time
+to move such a task out of the ``Makefile`` and into some other tool such as
+`docker`_, `zc.buildout`_ or a well factored script.
+
 How to add or change targets
 ============================
 
@@ -382,6 +390,12 @@ convenient in the ``Makefile``, such as loops or anything but the simplest
 conditionals, put the commands in a script (shell, Python, etc.), and invoke
 that script in the target's recipe.
 
+`Makefile variables`_ can be used to parameterize recipes.  `Makefile canned
+recipes`_ can also be used to share common code between recipes.  These
+features can also be used together for more complex factoring of ``Makefile``
+code, though this may be a sign such tasks should be moved out of the
+``Makefile``, see above in `Makefile`_
+
 If a recipe doesn't create any meaningful files or directories that can be
 used as a target, or the modification times of those files and/or directories
 aren't updated leading to the recipe always being run, you can use ``tee`` to
@@ -421,13 +435,15 @@ overhead for most of such steps.  ``Makefile`` also has a rudimentary
 to avoid running unnecessary steps which saves developer time and
 interruptions.  Also, adding a set of arbitrary shell commands to a
 ``Makefile`` has much less overhead than adding them to other systems such as
-`zc.buildout`_, `webpack`_, `gulp`_.  Finally, ``make`` is available pretty
-much everywhere so there are essentially no external dependency issues.
+`docker`_, `zc.buildout`_, `webpack`_, `gulp`_.  Finally, ``make`` is
+available pretty much everywhere so there are essentially no external
+dependency issues.
 
 Unfortunately, tabs are required by ``make``, so it is recommended that you
 configure your editor to represent tab characters with how ever many spaces
 you prefer.
 
+.. _`docker`: https://docs.docker.com/get-started/
 .. _`zc.buildout`: http://www.buildout.org
 .. _`webpack`: https://webpack.js.org
 .. _`gulp`: https://gulpjs.com
@@ -436,6 +452,10 @@ you prefer.
    https://www.gnu.org/software/make/manual/html_node/Rule-Introduction.html
 .. _`a phony target`:
    https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html
+.. _`Makefile canned recipes`:
+   https://www.gnu.org/software/make/manual/html_node/Canned-Recipes.html
+.. _`Makefile variables`:
+   https://www.gnu.org/software/make/manual/html_node/Using-Variables.html
 
 
 =============
