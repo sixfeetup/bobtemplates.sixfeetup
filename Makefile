@@ -13,7 +13,7 @@ TO_CLEAN = .venv myproject
 build: .venv/bin/mrbob myproject/.git myproject/Makefile
 	git checkout develop
 	read -p \
-		"Make any desired changes in myproject/ before running make and hit return:" \
+		"Hit return after making any changes in myproject/ to run myproject/Makefile" \
 		ignored
 	$(MAKE) -C myproject "$(@)"
 
