@@ -22,10 +22,10 @@ TO_CLEAN = var/filestorage var/blobstorage parts buildout.cfg env
 ifndef DATA_OVERWRITE
 	DATA_RSYNC_OPTS = --append-verify
 endif
-BUILD_PREREQS = bin/instance1
 ifdef DATA_DOWNLOAD
-BUILD_PREREQS += data
+BUILD_PREREQS = data
 endif
+BUILD_PREREQS += bin/instance1
 
 
 ## Top level targets
@@ -34,7 +34,7 @@ endif
 build: $(BUILD_PREREQS)
 
 .PHONY: data
-data: bin/instance1 rsync-zodb
+data: rsync-zodb
 
 .PHONY: run
 run: build
