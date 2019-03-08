@@ -11,7 +11,6 @@ TO_CLEAN = .venv myproject
 
 .PHONY: build
 build: .venv/bin/mrbob myproject/.git myproject/Makefile
-	git checkout develop
 	$(MAKE) -C myproject "$(@)"
 
 .PHONY: test
@@ -37,6 +36,7 @@ clean:
 	.venv/bin/pip install -e .
 
 myproject/.git:
+	git checkout develop
 	git init myproject
 	touch myproject/.gitignore
 	cd myproject && \
