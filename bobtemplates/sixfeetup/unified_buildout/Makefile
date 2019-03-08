@@ -81,14 +81,14 @@ build: $(BUILD_PREREQS) bin/instance1
 data: rsync-zodb
 
 .PHONY: run
-run: build $(RUN_PREREQS)
 ifdef MTA_LOCAL
+run:
 	$(MAKE) -j 2 run-mta run-zope
 else
-	$(MAKE) run-zope
+run: run-zope
 endif
 .PHONY: run-zope
-run-zope: build $(RUN-ZOPE_PREREQS)
+run-zope: build $(RUN_PREREQS)
 	scripts/control fg
 .PHONY: run-mta
 run-mta: env/bin/python
