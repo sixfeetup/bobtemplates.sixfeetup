@@ -88,7 +88,7 @@ else
 	$(MAKE) run-zope
 endif
 .PHONY: run-zope
-run-zope: build $(RUN-ZOPE_PREREQS) run-zope
+run-zope: build $(RUN-ZOPE_PREREQS)
 	scripts/control fg
 .PHONY: run-mta
 run-mta: env/bin/python
