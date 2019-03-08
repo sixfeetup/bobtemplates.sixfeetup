@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <registry>
+<!-- Here in case you need it, commented out for your sanity.
+     If you decide to use this, remove the cache-busting from the Gulpfile and
+     remove the corresponding link/scripts tags from index.html
+
     <records prefix="plone.bundles/{{{ project_name }}}-bundle" interface='Products.CMFPlone.interfaces.IBundleRegistry'>
         <value key="enabled">True</value>
         <value key="jscompilation">++theme++{{{ project_name }}}.theme/static/dist/theme-compiled.min.js</value>
@@ -8,4 +12,5 @@
         <value key="depends">plone,plone-logged-in</value>
         <value key="last_compilation">2018-08-24 09:00:00</value>
     </records>
+-->
 </registry>

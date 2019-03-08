@@ -16,6 +16,7 @@
           href="barceloneta-apple-touch-icon-57x57-precomposed.png" />
     <link rel="apple-touch-icon-precomposed"
           href="barceloneta-apple-touch-icon-precomposed.png" />
+    <link rel="stylesheet" type="text/css" href="/++theme++{{{ project_name }}}.theme/static/dist/theme-compiled.css">
   </head>
   <body>
     <section id="portal-toolbar">
@@ -60,5 +61,6 @@
     <footer id="portal-footer-wrapper">
       <div class="container" id="portal-footer"></div>
     </footer>
+    <script src="/++theme++{{{ project_name }}}.theme/static/dist/theme-compiled.js"></script>
   </body>
 </html>
