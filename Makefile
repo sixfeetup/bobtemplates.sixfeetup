@@ -12,9 +12,6 @@ TO_CLEAN = .venv myproject
 .PHONY: build
 build: .venv/bin/mrbob myproject/.git myproject/Makefile
 	git checkout develop
-	read -p \
-		"Hit return after making any changes in myproject/ to run myproject/Makefile" \
-		ignored
 	$(MAKE) -C myproject "$(@)"
 
 .PHONY: test
@@ -53,3 +50,7 @@ myproject/Makefile: \
 		bobtemplates/sixfeetup/*/*/*/*/*/*
 	.venv/bin/mrbob -O "myproject" \
 		-n bobtemplates.sixfeetup:unified_buildout
+	touch "$(@)"
+	read -p \
+		"Hit return after making any changes in myproject/ to run myproject/Makefile" \
+		ignored
