@@ -105,6 +105,7 @@ env:
 # Install the versions of zc.buildout and setuptools you need.
 env/bin/buildout: env requirements.txt
 	env/bin/pip install -r requirements.txt
+	touch "$(@)"
 
 # Download Plone's eggs and products, as well as other dependencies, create a
 # new Zope 2 installation, and create a new Zope instance configured with
