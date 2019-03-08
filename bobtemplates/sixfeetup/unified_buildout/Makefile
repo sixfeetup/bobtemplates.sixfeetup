@@ -48,6 +48,19 @@ ifndef DATA_OVERWRITE
 	DATA_RSYNC_OPTS = --append-verify
 endif
 
+define DB_MYSQLD_ARGS =
+	--datadir=$(CHECKOUT_DIR)var/mysql \
+	--socket=$(CHECKOUT_DIR)var/mysql/mysql.sock \
+	--skip-networking \
+	--pid-file=$(CHECKOUT_DIR)var/mysql/mysql.pid \
+	--log-error=$(CHECKOUT_DIR)var/mysql/error.log
+endef
+define DB_MYSQL_ARGS =
+	-S $(CHECKOUT_DIR)var/mysql/mysql.sock \
+	-u "$(DB_USER)" --password="$(DB_PASSWD)"
+endef
+
+# Handle optional target prerequisites
 ifdef DB_MYSQL
 BUILD_PREREQS = var/mysql/auto.cnf
 RUN_PREREQS = start-mysqld
@@ -116,18 +129,6 @@ bin/instance1: \
 	env/bin/buildout
 
 # Optionally set up an isolated MySQL DB instance
-ifdef DB_MYSQL
-define DB_MYSQLD_ARGS =
-	--datadir=$(CHECKOUT_DIR)var/mysql \
-	--socket=$(CHECKOUT_DIR)var/mysql/mysql.sock \
-	--skip-networking \
-	--pid-file=$(CHECKOUT_DIR)var/mysql/mysql.pid \
-	--log-error=$(CHECKOUT_DIR)var/mysql/error.log
-endef
-define DB_MYSQL_ARGS =
-	-S $(CHECKOUT_DIR)var/mysql/mysql.sock \
-	-u "$(DB_USER)" --password="$(DB_PASSWD)"
-endef
 .PHONY: mysql
 mysql: build start-mysqld
 	mysql $(DB_MYSQL_ARGS) "$(DB_NAME)"
@@ -168,10 +169,8 @@ ifdef DATA_DB_DUMP_URL
 endif
 endif
 endif
-endif
 
 # Copy the project data
-ifdef DATA_DOWNLOAD
 .PHONY: ssh-copy-ids
 ssh-copy-ids:
 	ssh -o "PasswordAuthentication no" -o "ConnectTimeout 5" \
@@ -183,4 +182,3 @@ rsync-zodb: ssh-copy-ids data-targets.txt
 		--inplace $(DATA_RSYNC_OPTS) --files-from=data-targets.txt \
 		$(DATA_HOST_RSYNC_PATH) \
 		$(DATA_ZODB_HOST):$(DEPLOY_DIR)/ ./
-endif
