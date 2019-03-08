@@ -9,7 +9,7 @@ SHELL=/usr/bin/env bash -o pipefail
 DATA_ZODB_HOST = $(DATA_HOST)
 DATA_DB_HOST = $(DATA_HOST)
 # Uncomment if rsync should be run as root on the DATA_HOST:
-#DATA_HOST_RSYNC_PATH = --rsync-path="sudo rsync"
+#DATA_RSYNC_OPTS +=  --rsync-path="sudo rsync"
 # Set to the directory where this project is deployed on DATA_HOST:
 #DEPLOY_DIR = /srv/prod.example.com
 # Set to the URL of the project data DB SQL dump file:
@@ -47,7 +47,7 @@ TO_CLEAN = var/filestorage var/blobstorage var/mysql parts buildout.cfg env
 CHECKOUT_DIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 ifndef DATA_OVERWRITE
-	DATA_RSYNC_OPTS = --append-verify
+	DATA_RSYNC_OPTS +=  --append-verify
 endif
 
 define DB_MYSQLD_ARGS =
@@ -158,7 +158,6 @@ var/mysql/auto.cnf:
 	$(MAKE) stop-mysqld
 ifneq ($(and $(DATA_DOWNLOAD),$(DATA_DB_SYNC)),)
 	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
-		$(DATA_HOST_RSYNC_PATH) \
 		$(DATA_DB_HOST):/var/lib/mysql var/
 	$(MAKE) start-mysqld
 else
@@ -190,7 +189,6 @@ ssh-copy-ids:
 		ssh-copy-id -o "ConnectTimeout 5" $(DATA_ZODB_HOST)
 .PHONY: rsync-zodb
 rsync-zodb: ssh-copy-ids data-targets.txt
-	rsync -vzPrlptD --rsync-path="sudo rsync" \
-		--inplace $(DATA_RSYNC_OPTS) --files-from=data-targets.txt \
-		$(DATA_HOST_RSYNC_PATH) \
+	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
+		--files-from=data-targets.txt \
 		$(DATA_ZODB_HOST):$(DEPLOY_DIR)/ ./
