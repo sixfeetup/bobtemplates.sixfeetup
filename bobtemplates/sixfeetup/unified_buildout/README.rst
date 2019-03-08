@@ -340,7 +340,9 @@ Start by understanding `the fundamentals of Makefile`_:
       changed so those should be the prerequisites.
 
   * Understand how ``make`` uses the modification time stamps of the target
-    and it's prerequisites to decide which recipes need to be run.
+    and it's prerequisites to decide which recipes need to be run.  This
+    understanding is useful, for example, to force certain targets to be
+    rebuilt, e.g. ``$ touch buildout.cfg`` to force buildout to be run.
 
   * Use separate ``Makefile`` files together in the relevant directories to
     keep changes close to related changes in VCS.  For example, if the project
