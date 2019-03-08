@@ -37,6 +37,8 @@ DB_PASSWD = $(DB_USER)
 # Set to non-empty to overwrite local data changes from DATA_HOST, e.g:
 # $ make DATA_OVERWRITE=true data
 #DATA_OVERWRITE = true
+# Set to non-empty to run a dummy MTA locally in the checkout
+#MTA_LOCAL = true
 
 # Constants
 TO_CLEAN = var/filestorage var/blobstorage var/mysql parts buildout.cfg env
@@ -80,7 +82,17 @@ data: rsync-zodb
 
 .PHONY: run
 run: build $(RUN_PREREQS)
+ifdef MTA_LOCAL
+	$(MAKE) -j 2 run-mta run-zope
+else
+	$(MAKE) run-zope
+endif
+.PHONY: run-zope
+run-zope: build $(RUN-ZOPE_PREREQS) run-zope
 	scripts/control fg
+.PHONY: run-mta
+run-mta: env/bin/python
+	env/bin/maildump
 
 .PHONY: test
 test: build
