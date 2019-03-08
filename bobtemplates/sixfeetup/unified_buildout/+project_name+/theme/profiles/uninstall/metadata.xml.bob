@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<metadata>
+  <version>0001</version>
+  <dependencies>
+{{% if pre_plone5  %}}
+        <dependency>profile-plonetheme.sunburst:default</dependency>
+{{% else %}}
+        <dependency>profile-plonetheme.barceloneta:default</dependency>
+{{% endif %}}
+  </dependencies>
+</metadata>

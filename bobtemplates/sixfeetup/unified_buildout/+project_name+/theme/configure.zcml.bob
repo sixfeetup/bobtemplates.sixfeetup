@@ -16,6 +16,14 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="{{{ project_name }}}.theme (uninstall)"
+      directory="profiles/uninstall"
+      description="Uninstall profile for {{{ project_name }}} Theme"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
   <plone:static
     directory="diazo_resources"
     type="theme"

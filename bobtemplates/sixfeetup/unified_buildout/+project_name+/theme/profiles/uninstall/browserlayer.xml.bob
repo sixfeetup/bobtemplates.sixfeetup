@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!-- Reemove the package-specific browser layer. -->
+<layers>
+    <layer name="{{{ project_name }}}.theme.customization.layer" remove="true" />
+</layers>
