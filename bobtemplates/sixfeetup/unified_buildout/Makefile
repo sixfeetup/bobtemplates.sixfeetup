@@ -88,7 +88,7 @@ else
 run: run-zope
 endif
 .PHONY: run-zope
-run-zope: build $(RUN_PREREQS)
+run-zope: $(RUN_PREREQS) build
 	scripts/control fg
 .PHONY: run-mta
 run-mta: env/bin/python
