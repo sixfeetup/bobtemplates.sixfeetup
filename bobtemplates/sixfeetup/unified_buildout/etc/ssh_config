@@ -1,0 +1,13 @@
+## Add something like the folowing at the top of your ~/.ssh/config (before
+## any `Host` or `Match` blocks) to include project-specific SSH configuration
+## into your user configuration:
+
+# Include ~/src/*/etc/ssh_config
+
+## Then add any project-specific but user-generic SSH configuration below and
+## commit to VCS to share among the team:
+
+# Host prod-*.example.com staging-*.example.com devel-*.example.com
+#      ProxyJump bastion.example.com
+#      User ubuntu
+#      LocalForward 8080 localhost:8080

@@ -14,6 +14,11 @@ To run unit tests, you can use::
 
  $ make test
 
+See the comments at the top of ``etc/ssh_config`` regarding including SSH
+configuration specific to this project, such as port forwards, bastion hosts,
+and user names.  Note that this may be required for downloading project data
+via the ``Makefile``.
+
 Installing PIL
 --------------
 
