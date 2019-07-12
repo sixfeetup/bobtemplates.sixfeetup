@@ -41,7 +41,7 @@ DB_PASSWD = $(DB_USER)
 #MTA_LOCAL = true
 
 # Constants
-TO_CLEAN = var/filestorage var/blobstorage var/mysql parts buildout.cfg env
+DATA_TARGETS = var/filestorage var/blobstorage
 
 ## Dynamic variables
 CHECKOUT_DIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -66,10 +66,13 @@ endef
 ifdef DB_MYSQL
 BUILD_PREREQS = var/mysql/auto.cnf
 RUN_PREREQS = start-mysqld
+DATA_TARGETS += var/mysql
 endif
 ifdef DATA_DOWNLOAD
 BUILD_PREREQS += data
 endif
+
+TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
 
 
 ## Top level targets
@@ -199,3 +202,9 @@ rsync-zodb: ssh-copy-ids data-targets.txt
 	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
 		--files-from=data-targets.txt \
 		$(DATA_ZODB_HOST):$(DEPLOY_DIR)/ ./
+.PHONY: backup-data
+backup-data: rsync-zodb
+	rsync -va $(DATA_TARGETS) ./ ./var/bak/
+.PHONY: restore-data
+restore-data:
+	rsync -va $(DATA_RSYNC_FILES) ./var/bak/ ./
