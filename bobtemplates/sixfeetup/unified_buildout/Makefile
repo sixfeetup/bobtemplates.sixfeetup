@@ -51,6 +51,7 @@ ifndef DATA_OVERWRITE
 endif
 
 define DB_MYSQLD_ARGS =
+	--skip-grant-tables \
 	--datadir=$(CHECKOUT_DIR)var/mysql \
 	--socket=$(CHECKOUT_DIR)var/mysql/mysql.sock \
 	--skip-networking \
@@ -179,9 +180,6 @@ endif
 endif
 	mysqld --initialize-insecure $(DB_MYSQLD_ARGS)
 	$(MAKE) start-mysqld
-	echo "CREATE DATABASE $(DB_NAME); CREATE USER '$(DB_USER)'@'localhost' IDENTIFIED BY '$(DB_PASSWD)'; GRANT ALL PRIVILEGES ON *.* TO '$(DB_USER)'@'localhost'; FLUSH PRIVILEGES;" \
-		| sudo mysql -S $(CHECKOUT_DIR)var/mysql/mysql.sock \
-		|| ($(MAKE) stop-mysqld; rm -rf var/mysql; false)
 ifdef DATA_DOWNLOAD
 ifdef DATA_DB_DUMP_URL
 	gunzip --stdout "var/db-$(DB_NAME)-dump.sql.gz" | \
