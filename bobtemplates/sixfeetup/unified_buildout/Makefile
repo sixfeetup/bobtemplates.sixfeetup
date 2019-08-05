@@ -13,20 +13,20 @@ DATA_DB_HOST = $(DATA_HOST)
 # Set to the directory where this project is deployed on DATA_HOST:
 #DEPLOY_DIR = /srv/prod.example.com
 # Set to the URL of the project data DB SQL dump file:
-#DATA_DB_DUMP_URL = https://extranet.example.com/path/to/db-dump.sql.gz
+#DATA_SQL_DB_DUMP_URL = https://extranet.example.com/path/to/db-dump.sql.gz
 
 # Set to non-empty if the project uses MySQL, sets up an isolated DB instance.
 # Use the var/mysql/mysql.sock UNIX socket to connect to the DB.
-#DB_MYSQL = true
+#SQL_DB_MYSQL = true
 # Set to the name of the DB to be used for the project
-#DB_NAME = foo_project_db_name
+#SQL_DB_NAME = foo_project_db_name
 # Set to the user name used to connect to the DB:
-DB_USER = $(USER)
+SQL_DB_USER = $(USER)
 # Set to the password used to authenticate to the DB:
-DB_PASSWD = $(DB_USER)
+SQL_DB_PASSWD = $(SQL_DB_USER)
 # Set to non-empty if DATA_DOWNLOAD is set and
 # DB data will be downloaded via rsync (as opposed to loading a DB dump file)
-#DATA_DB_SYNC = true
+#DATA_SQL_DB_SYNC = true
 # TODO Add PostgreSQL
 
 ## Option Variables
@@ -50,7 +50,7 @@ ifndef DATA_OVERWRITE
 	DATA_RSYNC_OPTS +=  --append-verify
 endif
 
-define DB_MYSQLD_ARGS =
+define SQL_DB_MYSQLD_ARGS =
 	--skip-grant-tables \
 	--datadir=$(CHECKOUT_DIR)var/mysql \
 	--socket=$(CHECKOUT_DIR)var/mysql/mysql.sock \
@@ -58,13 +58,13 @@ define DB_MYSQLD_ARGS =
 	--pid-file=$(CHECKOUT_DIR)var/mysql/mysql.pid \
 	--log-error=$(CHECKOUT_DIR)var/mysql/error.log
 endef
-define DB_MYSQL_ARGS =
+define SQL_DB_MYSQL_ARGS =
 	-S $(CHECKOUT_DIR)var/mysql/mysql.sock \
-	-u "$(DB_USER)" --password="$(DB_PASSWD)"
+	-u "$(SQL_DB_USER)" --password="$(SQL_DB_PASSWD)"
 endef
 
 # Handle optional target prerequisites
-ifdef DB_MYSQL
+ifdef SQL_DB_MYSQL
 BUILD_PREREQS = var/mysql/auto.cnf
 RUN_PREREQS = start-mysqld
 DATA_TARGETS += var/mysql
@@ -147,12 +147,12 @@ bin/instance1: \
 # Optionally set up an isolated MySQL DB instance
 .PHONY: mysql
 mysql: build start-mysqld
-	mysql $(DB_MYSQL_ARGS) "$(DB_NAME)"
+	mysql $(SQL_DB_MYSQL_ARGS) "$(SQL_DB_NAME)"
 .PHONY: start-mysqld
 start-mysqld:
 	$(MAKE) stop-mysqld
 	mysqld --defaults-extra-file=$(CHECKOUT_DIR)etc/my.cnf \
-		$(DB_MYSQLD_ARGS) &
+		$(SQL_DB_MYSQLD_ARGS) &
 	sleep 1
 .PHONY: stop-mysqld
 stop-mysqld:
@@ -160,30 +160,30 @@ stop-mysqld:
 	sleep 1
 var/mysql/auto.cnf:
 	$(MAKE) stop-mysqld
-ifneq ($(and $(DATA_DOWNLOAD),$(DATA_DB_SYNC)),)
+ifneq ($(and $(DATA_DOWNLOAD),$(DATA_SQL_DB_SYNC)),)
 # If you can't get SSH access via an account that has sudo *without* password
 # you can use the following approach to use an askpass program, but it's
 # pretty cumbersome, much better all around to use a separate account:
 # https://unix.bris.ac.uk/2015/08/04/rsync-between-two-hosts-using-sudo-and-a-password-prompt/
 # DATA_RSYNC_OPTS += "-e 'ssh -X' \
 #	--rsync-path='SUDO_ASKPASS=/usr/bin/ssh-askpass sudo -A rsync'"
-#	ssh -t $(DATA_DB_HOST) 'sudo -n true || sudo apt install ssh-askpass'
+#	ssh -t $(DATA_SQL_DB_HOST) 'sudo -n true || sudo apt install ssh-askpass'
 	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
-		$(DATA_DB_HOST):/var/lib/mysql var/
+		$(DATA_SQL_DB_HOST):/var/lib/mysql var/
 	$(MAKE) start-mysqld
 else
 ifdef DATA_DOWNLOAD
-ifdef DATA_DB_DUMP_URL
-	wget --no-check-certificate -c -O "var/db-$(DB_NAME)-dump.sql.gz" \
-		"$(DATA_DB_DUMP_URL)"
+ifdef DATA_SQL_DB_DUMP_URL
+	wget --no-check-certificate -c -O "var/db-$(SQL_DB_NAME)-dump.sql.gz" \
+		"$(DATA_SQL_DB_DUMP_URL)"
 endif
 endif
-	mysqld --initialize-insecure $(DB_MYSQLD_ARGS)
+	mysqld --initialize-insecure $(SQL_DB_MYSQLD_ARGS)
 	$(MAKE) start-mysqld
 ifdef DATA_DOWNLOAD
-ifdef DATA_DB_DUMP_URL
-	gunzip --stdout "var/db-$(DB_NAME)-dump.sql.gz" | \
-		mysql $(DB_MYSQL_ARGS) "$(DB_NAME)" \
+ifdef DATA_SQL_DB_DUMP_URL
+	gunzip --stdout "var/db-$(SQL_DB_NAME)-dump.sql.gz" | \
+		mysql $(SQL_DB_MYSQL_ARGS) "$(SQL_DB_NAME)" \
 		|| ($(MAKE) stop-mysqld; rm -rf var/mysql; false)
 endif
 endif
