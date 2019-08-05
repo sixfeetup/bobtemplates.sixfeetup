@@ -15,15 +15,17 @@ DATA_DB_HOST = $(DATA_HOST)
 # Set to the URL of the project data DB SQL dump file:
 #DATA_SQL_DB_DUMP_URL = https://extranet.example.com/path/to/db-dump.sql.gz
 
-# Set to non-empty if the project uses MySQL, sets up an isolated DB instance.
-# Use the var/mysql/mysql.sock UNIX socket to connect to the DB.
-#SQL_DB_MYSQL = true
+# Set to the name of the SQL DB software if the project uses a SQL DB.  The
+# `Makefile` will set up an isolated SQL DB instance.  Use the `sql-client`
+# target to connect to the DB.
+#SQL_DB_TYPE = 'mysql'
 # Set to the name of the DB to be used for the project
 #SQL_DB_NAME = foo_project_db_name
 # Set to the user name used to connect to the DB:
 SQL_DB_USER = $(USER)
 # Set to the password used to authenticate to the DB:
 SQL_DB_PASSWD = $(SQL_DB_USER)
+
 # Set to non-empty if DATA_DOWNLOAD is set and
 # DB data will be downloaded via rsync (as opposed to loading a DB dump file)
 #DATA_SQL_DB_SYNC = true
@@ -50,25 +52,27 @@ ifndef DATA_OVERWRITE
 	DATA_RSYNC_OPTS +=  --append-verify
 endif
 
-define SQL_DB_MYSQLD_ARGS =
+ifeq ($(SQL_DB_TYPE),mysql)
+SQL_DB_INSTANCE = var/$(SQL_DB_TYPE)/auto.cnf
+SQL_DB_CLIENT = $(SQL_DB_TYPE)
+define SQL_DB_SERVER_ARGS =
 	--skip-grant-tables \
-	--datadir=$(CHECKOUT_DIR)var/mysql \
-	--socket=$(CHECKOUT_DIR)var/mysql/mysql.sock \
+	--datadir=$(CHECKOUT_DIR)var/$(SQL_DB_TYPE) \
+	--socket=$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)/$(SQL_DB_TYPE).sock \
 	--skip-networking \
-	--pid-file=$(CHECKOUT_DIR)var/mysql/mysql.pid \
-	--log-error=$(CHECKOUT_DIR)var/mysql/error.log
+	--pid-file=$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)/$(SQL_DB_TYPE).pid \
+	--log-error=$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)/error.log
 endef
-define SQL_DB_MYSQL_ARGS =
-	-S $(CHECKOUT_DIR)var/mysql/mysql.sock \
-	-u "$(SQL_DB_USER)" --password="$(SQL_DB_PASSWD)"
+define SQL_DB_CLIENT_ARGS =
+	-S $(CHECKOUT_DIR)var/$(SQL_DB_TYPE)/$(SQL_DB_TYPE).sock \
+	-u "$(SQL_DB_USER)" --password="$(SQL_DB_PASSWD)" "$(SQL_DB_NAME)"
 endef
-
 # Handle optional target prerequisites
-ifdef SQL_DB_MYSQL
-BUILD_PREREQS = var/mysql/auto.cnf
-RUN_PREREQS = start-mysqld
-DATA_TARGETS += var/mysql
+BUILD_PREREQS = var/$(SQL_DB_TYPE)/auto.cnf
+RUN_PREREQS = start-sql-server
+DATA_TARGETS += var/$(SQL_DB_TYPE)
 endif
+
 ifdef DATA_DOWNLOAD
 BUILD_PREREQS += data
 endif
@@ -144,22 +148,28 @@ bin/instance1: \
 		setup.py buildout.cfg profiles/*.cfg
 	env/bin/buildout
 
-# Optionally set up an isolated MySQL DB instance
-.PHONY: mysql
-mysql: build start-mysqld
-	mysql $(SQL_DB_MYSQL_ARGS) "$(SQL_DB_NAME)"
-.PHONY: start-mysqld
-start-mysqld:
-	$(MAKE) stop-mysqld
+
+# Optionally set up an isolated SQL DB instance
+
+.PHONY: sql-client
+sql-client: build start-sql-server
+	$(SQL_DB_CLIENT) $(SQL_DB_CLIENT_ARGS)
+
+.PHONY: start-sql-server
+start-sql-server:
+	$(MAKE) stop-sql-server
 	mysqld --defaults-extra-file=$(CHECKOUT_DIR)etc/my.cnf \
-		$(SQL_DB_MYSQLD_ARGS) &
+		$(SQL_DB_SERVER_ARGS) &
 	sleep 1
-.PHONY: stop-mysqld
-stop-mysqld:
-	kill $(shell cat $(CHECKOUT_DIR)var/mysql/mysql.pid) || true
+
+.PHONY: stop-sql-server
+stop-sql-server:
+	kill $(shell cat $(CHECKOUT_DIR)var/$(SQL_DB_TYPE)/$(SQL_DB_TYPE).pid) || true
+endif
 	sleep 1
-var/mysql/auto.cnf:
-	$(MAKE) stop-mysqld
+
+$(SQL_DB_INSTANCE):
+	$(MAKE) stop-sql-server
 ifneq ($(and $(DATA_DOWNLOAD),$(DATA_SQL_DB_SYNC)),)
 # If you can't get SSH access via an account that has sudo *without* password
 # you can use the following approach to use an askpass program, but it's
@@ -169,8 +179,8 @@ ifneq ($(and $(DATA_DOWNLOAD),$(DATA_SQL_DB_SYNC)),)
 #	--rsync-path='SUDO_ASKPASS=/usr/bin/ssh-askpass sudo -A rsync'"
 #	ssh -t $(DATA_SQL_DB_HOST) 'sudo -n true || sudo apt install ssh-askpass'
 	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
-		$(DATA_SQL_DB_HOST):/var/lib/mysql var/
-	$(MAKE) start-mysqld
+		$(DATA_SQL_DB_HOST):/var/lib/$(SQL_DB_TYPE) var/
+	$(MAKE) start-sql-server
 else
 ifdef DATA_DOWNLOAD
 ifdef DATA_SQL_DB_DUMP_URL
@@ -178,13 +188,13 @@ ifdef DATA_SQL_DB_DUMP_URL
 		"$(DATA_SQL_DB_DUMP_URL)"
 endif
 endif
-	mysqld --initialize-insecure $(SQL_DB_MYSQLD_ARGS)
-	$(MAKE) start-mysqld
+	mysqld --initialize-insecure $(SQL_DB_SERVER_ARGS)
+	$(MAKE) start-sql-server
 ifdef DATA_DOWNLOAD
 ifdef DATA_SQL_DB_DUMP_URL
 	gunzip --stdout "var/db-$(SQL_DB_NAME)-dump.sql.gz" | \
-		mysql $(SQL_DB_MYSQL_ARGS) "$(SQL_DB_NAME)" \
-		|| ($(MAKE) stop-mysqld; rm -rf var/mysql; false)
+		$(SQL_DB_CLIENT) $(SQL_DB_CLIENT_ARGS) \
+		|| ($(MAKE) stop-sql-server; rm -rf var/$(SQL_DB_TYPE); false)
 endif
 endif
 endif
