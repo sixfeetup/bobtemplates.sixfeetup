@@ -76,7 +76,7 @@ define SQL_DB_CLIENT_ARGS =
 	"$(SQL_DB_NAME)" "$(SQL_DB_USER)"
 endef
 # Handle optional target prerequisites
-BUILD_PREREQS += var/$(SQL_DB_TYPE)/PG_VERSION
+BUILD_PREREQS += $(SQL_DB_INSTANCE)
 RUN_PREREQS = start-sql-server
 DATA_TARGETS += var/$(SQL_DB_TYPE)
 endif
@@ -189,7 +189,7 @@ sql-client: build start-sql-server
 	$(SQL_DB_CLIENT) $(SQL_DB_CLIENT_ARGS)
 
 .PHONY: start-sql-server
-start-sql-server: $(SQL_DB_INSTANCE)
+start-sql-server:
 	$(MAKE) stop-sql-server
 ifeq ($(SQL_DB_TYPE),postgresql)
 	pg_ctl start $(SQL_DB_SERVER_ARGS)
