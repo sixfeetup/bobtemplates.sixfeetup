@@ -15,7 +15,7 @@ build: .venv/bin/mrbob myproject/.git myproject/Makefile
 
 .PHONY: test
 test: build
-	bin/python setup.py test
+	.venv/bin/python setup.py test
 
 .PHONY: clean
 clean:
