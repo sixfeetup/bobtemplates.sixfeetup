@@ -106,7 +106,7 @@ TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
 ## Top level targets
 
 .PHONY: build
-build: $(BUILD_PREREQS) bin/instance1
+build: bin/instance1
 
 .PHONY: data
 data: rsync-zodb
@@ -159,7 +159,7 @@ env:
 	virtualenv env --python=python2.7
 
 # Install the versions of zc.buildout and setuptools you need.
-env/bin/buildout: env requirements.txt
+env/bin/buildout: env requirements.txt setup.py $(BUILD_PREREQS)
 	env/bin/pip install -r requirements.txt
 	touch "$(@)"
 
