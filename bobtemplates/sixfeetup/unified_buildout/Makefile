@@ -52,11 +52,13 @@ DATA_TARGETS = var/filestorage var/blobstorage
 
 ## Dynamic variables
 
+ifdef DATA_DOWNLOAD
+BUILD_PREREQS = data
+endif
+
 ifndef DATA_OVERWRITE
 	DATA_RSYNC_OPTS +=  --append-verify
 endif
-
-TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
 
 
 ## SQL DB settings for specific software
@@ -72,10 +74,9 @@ define SQL_DB_CLIENT_ARGS =
 	"$(SQL_DB_NAME)" "$(SQL_DB_USER)"
 endef
 # Handle optional target prerequisites
-BUILD_PREREQS = var/$(SQL_DB_TYPE)/PG_VERSION
+BUILD_PREREQS += var/$(SQL_DB_TYPE)/PG_VERSION
 RUN_PREREQS = start-sql-server
 DATA_TARGETS += var/$(SQL_DB_TYPE)
-TO_CLEAN += var/$(SQL_DB_TYPE)
 endif
 
 ifeq ($(SQL_DB_TYPE),mysql)
@@ -94,15 +95,12 @@ define SQL_DB_CLIENT_ARGS =
 	-u "$(SQL_DB_USER)" --password="$(SQL_DB_PASSWD)" "$(SQL_DB_NAME)"
 endef
 # Handle optional target prerequisites
-BUILD_PREREQS = var/$(SQL_DB_TYPE)/auto.cnf
+BUILD_PREREQS += var/$(SQL_DB_TYPE)/auto.cnf
 RUN_PREREQS = start-sql-server
 DATA_TARGETS += var/$(SQL_DB_TYPE)
-TO_CLEAN += var/$(SQL_DB_TYPE)
 endif
 
-ifdef DATA_DOWNLOAD
-BUILD_PREREQS += data
-endif
+TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
 
 
 ## Top level targets
