@@ -1,6 +1,7 @@
 ### Local development environment set up
 
 SHELL=/usr/bin/env bash -o pipefail
+CHECKOUT_DIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 ## Project-specific variables, set before running
 
@@ -20,7 +21,7 @@ DATA_DB_HOST = $(DATA_HOST)
 # target to connect to the DB.
 #SQL_DB_TYPE = 'mysql'
 # Set to the name of the DB to be used for the project
-#SQL_DB_NAME = foo_project_db_name
+SQL_DB_NAME = $(notdir $(CHECKOUT_DIR:/=))
 # Set to the user name used to connect to the DB:
 SQL_DB_USER = $(USER)
 # Set to the password used to authenticate to the DB:
@@ -46,7 +47,6 @@ SQL_DB_PASSWD = $(SQL_DB_USER)
 DATA_TARGETS = var/filestorage var/blobstorage
 
 ## Dynamic variables
-CHECKOUT_DIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 ifndef DATA_OVERWRITE
 	DATA_RSYNC_OPTS +=  --append-verify
