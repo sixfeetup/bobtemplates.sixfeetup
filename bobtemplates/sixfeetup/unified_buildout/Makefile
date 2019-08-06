@@ -228,6 +228,16 @@ ifeq ($(SQL_DB_TYPE),mysql)
 	mysqld --initialize-insecure $(SQL_DB_SERVER_ARGS)
 endif
 	$(MAKE) start-sql-server
+ifeq ($(SQL_DB_TYPE),postgresql)
+	createuser -h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 "$(SQL_DB_USER)"
+	createdb -h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 \
+		-O "$(SQL_DB_USER)" "$(SQL_DB_NAME)"
+endif
+ifeq ($(SQL_DB_TYPE),mysql)
+	echo "CREATE DATABASE $(SQL_DB_NAME); CREATE USER '$(DB_USER)'@'localhost' IDENTIFIED BY '$(DB_PASSWD)'; GRANT ALL PRIVILEGES ON *.* TO '$(DB_USER)'@'localhost'; FLUSH PRIVILEGES;" \
+		| sudo mysql -S $(CHECKOUT_DIR)var/mysql/mysql.sock \
+		|| ($(MAKE) stop-mysqld; rm -rf var/mysql; false)
+endif
 ifdef DATA_DOWNLOAD
 ifdef DATA_SQL_DB_DUMP_URL
 	gunzip --stdout "var/db-$(SQL_DB_NAME)-dump.sql.gz" | \
