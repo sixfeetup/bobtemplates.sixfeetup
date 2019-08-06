@@ -19,7 +19,12 @@ DATA_DB_HOST = $(DATA_HOST)
 # Set to the name of the SQL DB software if the project uses a SQL DB.  The
 # `Makefile` will set up an isolated SQL DB instance.  Use the `sql-client`
 # target to connect to the DB.
-#SQL_DB_TYPE = 'mysql'
+
+# Requires pg_ctl
+#SQL_DB_TYPE = postgresql
+
+#SQL_DB_TYPE = mysql
+
 # Set to the name of the DB to be used for the project
 SQL_DB_NAME = $(notdir $(CHECKOUT_DIR:/=))
 # Set to the user name used to connect to the DB:
@@ -30,7 +35,6 @@ SQL_DB_PASSWD = $(SQL_DB_USER)
 # Set to non-empty if DATA_DOWNLOAD is set and
 # DB data will be downloaded via rsync (as opposed to loading a DB dump file)
 #DATA_SQL_DB_SYNC = true
-# TODO Add PostgreSQL
 
 ## Option Variables
 # Set to non-empty to enable downloading/syncing project data.
@@ -53,6 +57,26 @@ ifndef DATA_OVERWRITE
 endif
 
 TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
+
+
+## SQL DB settings for specific software
+
+ifeq ($(SQL_DB_TYPE),postgresql)
+SQL_DB_INSTANCE = var/$(SQL_DB_TYPE)/PG_VERSION
+SQL_DB_CLIENT = psql
+define SQL_DB_SERVER_ARGS =
+	-D "var/$(SQL_DB_TYPE)/" -o '-c config_file="etc/$(SQL_DB_TYPE).conf"'
+endef
+define SQL_DB_CLIENT_ARGS =
+	-h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 \
+	"$(SQL_DB_NAME)" "$(SQL_DB_USER)"
+endef
+# Handle optional target prerequisites
+BUILD_PREREQS = var/$(SQL_DB_TYPE)/PG_VERSION
+RUN_PREREQS = start-sql-server
+DATA_TARGETS += var/$(SQL_DB_TYPE)
+TO_CLEAN += var/$(SQL_DB_TYPE)
+endif
 
 ifeq ($(SQL_DB_TYPE),mysql)
 SQL_DB_INSTANCE = var/$(SQL_DB_TYPE)/auto.cnf
@@ -159,12 +183,21 @@ sql-client: build start-sql-server
 .PHONY: start-sql-server
 start-sql-server:
 	$(MAKE) stop-sql-server
+ifeq ($(SQL_DB_TYPE),postgresql)
+	pg_ctl start $(SQL_DB_SERVER_ARGS)
+endif
+ifeq ($(SQL_DB_TYPE),mysql)
 	mysqld --defaults-extra-file=$(CHECKOUT_DIR)etc/my.cnf \
 		$(SQL_DB_SERVER_ARGS) &
+endif
 	sleep 1
 
 .PHONY: stop-sql-server
 stop-sql-server:
+ifeq ($(SQL_DB_TYPE),postgresql)
+	pg_ctl stop $(SQL_DB_SERVER_ARGS) || true
+endif
+ifeq ($(SQL_DB_TYPE),mysql)
 	kill $(shell cat $(CHECKOUT_DIR)var/$(SQL_DB_TYPE)/$(SQL_DB_TYPE).pid) || true
 endif
 	sleep 1
@@ -189,7 +222,12 @@ ifdef DATA_SQL_DB_DUMP_URL
 		"$(DATA_SQL_DB_DUMP_URL)"
 endif
 endif
+ifeq ($(SQL_DB_TYPE),postgresql)
+	pg_ctl initdb -D var/$(SQL_DB_TYPE)/
+endif
+ifeq ($(SQL_DB_TYPE),mysql)
 	mysqld --initialize-insecure $(SQL_DB_SERVER_ARGS)
+endif
 	$(MAKE) start-sql-server
 ifdef DATA_DOWNLOAD
 ifdef DATA_SQL_DB_DUMP_URL
