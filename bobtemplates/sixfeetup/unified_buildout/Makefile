@@ -13,8 +13,6 @@ DATA_DB_HOST = $(DATA_HOST)
 #DATA_RSYNC_OPTS += --rsync-path="sudo rsync"
 # Set to the directory where this project is deployed on DATA_HOST:
 #DEPLOY_DIR = /srv/prod.example.com
-# Set to the URL of the project data DB SQL dump file:
-#DATA_SQL_DB_DUMP_URL = https://extranet.example.com/path/to/db-dump.sql.gz
 
 # Set to the name of the SQL DB software if the project uses a SQL DB.  The
 # `Makefile` will set up an isolated SQL DB instance.  Use the `sql-client`
@@ -35,6 +33,10 @@ SQL_DB_PASSWD = $(SQL_DB_USER)
 # Set to non-empty if DATA_DOWNLOAD is set and
 # DB data will be downloaded via rsync (as opposed to loading a DB dump file)
 #DATA_SQL_DB_SYNC = true
+DATA_SQL_DB_HOST = $(DATA_HOST)
+DATA_SQL_DB_DIR = /var/lib/$(SQL_DB_TYPE)
+# Set to the URL of the project data DB SQL dump file:
+#DATA_SQL_DB_DUMP_URL = https://extranet.example.com/path/to/db-dump.sql.gz
 
 ## Option Variables
 # Set to non-empty to enable downloading/syncing project data.
@@ -219,7 +221,7 @@ ifneq ($(and $(DATA_DOWNLOAD),$(DATA_SQL_DB_SYNC)),)
 #	--rsync-path='SUDO_ASKPASS=/usr/bin/ssh-askpass sudo -A rsync'"
 #	ssh -t $(DATA_SQL_DB_HOST) 'sudo -n true || sudo apt install ssh-askpass'
 	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
-		$(DATA_SQL_DB_HOST):/var/lib/$(SQL_DB_TYPE) var/
+		$(DATA_SQL_DB_HOST):$(DATA_SQL_DB_DIR)/ var/$(SQL_DB_TYPE)/
 	$(MAKE) start-sql-server
 else
 ifdef DATA_DOWNLOAD
