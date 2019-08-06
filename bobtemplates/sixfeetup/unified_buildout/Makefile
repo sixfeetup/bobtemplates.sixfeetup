@@ -52,6 +52,8 @@ ifndef DATA_OVERWRITE
 	DATA_RSYNC_OPTS +=  --append-verify
 endif
 
+TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
+
 ifeq ($(SQL_DB_TYPE),mysql)
 SQL_DB_INSTANCE = var/$(SQL_DB_TYPE)/auto.cnf
 SQL_DB_CLIENT = $(SQL_DB_TYPE)
@@ -71,13 +73,12 @@ endef
 BUILD_PREREQS = var/$(SQL_DB_TYPE)/auto.cnf
 RUN_PREREQS = start-sql-server
 DATA_TARGETS += var/$(SQL_DB_TYPE)
+TO_CLEAN += var/$(SQL_DB_TYPE)
 endif
 
 ifdef DATA_DOWNLOAD
 BUILD_PREREQS += data
 endif
-
-TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
 
 
 ## Top level targets
