@@ -10,7 +10,7 @@ CHECKOUT_DIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 DATA_ZODB_HOST = $(DATA_HOST)
 DATA_DB_HOST = $(DATA_HOST)
 # Uncomment if rsync should be run as root on the DATA_HOST:
-#DATA_RSYNC_OPTS +=  --rsync-path="sudo rsync"
+#DATA_RSYNC_OPTS += --rsync-path="sudo rsync"
 # Set to the directory where this project is deployed on DATA_HOST:
 #DEPLOY_DIR = /srv/prod.example.com
 # Set to the URL of the project data DB SQL dump file:
@@ -57,7 +57,7 @@ BUILD_PREREQS = data
 endif
 
 ifndef DATA_OVERWRITE
-	DATA_RSYNC_OPTS +=  --append-verify
+	DATA_RSYNC_OPTS += --append-verify
 endif
 
 
