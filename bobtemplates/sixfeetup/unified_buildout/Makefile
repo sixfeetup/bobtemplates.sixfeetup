@@ -130,7 +130,14 @@ test: build
 	bin/test
 
 .PHONY: clean
-clean:
+clean: clean-data
+	for to_clean in $(TO_CLEAN); do \
+		rm -rf "$$to_clean.bak" && \
+		mv "$$to_clean" "$$to_clean.bak" || true; \
+	done
+
+.PHONY: clean-data
+clean-data:
 	scripts/control stop || true
 	for to_clean in $(TO_CLEAN); do \
 		rm -rf "$$to_clean.bak" && \
