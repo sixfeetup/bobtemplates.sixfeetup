@@ -170,6 +170,7 @@ bin/instance1: \
 		$(BUILD_PREREQS) env/bin/buildout \
 		setup.py buildout.cfg profiles/*.cfg
 	env/bin/buildout
+	touch "$(@)"
 
 
 # Optionally set up an isolated SQL DB instance
