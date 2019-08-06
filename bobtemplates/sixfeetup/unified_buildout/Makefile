@@ -159,7 +159,7 @@ env:
 	virtualenv env --python=python2.7
 
 # Install the versions of zc.buildout and setuptools you need.
-env/bin/buildout: env requirements.txt setup.py $(BUILD_PREREQS)
+env/bin/buildout: env requirements.txt
 	env/bin/pip install -r requirements.txt
 	touch "$(@)"
 
@@ -167,7 +167,7 @@ env/bin/buildout: env requirements.txt setup.py $(BUILD_PREREQS)
 # new Zope 2 installation, and create a new Zope instance configured with
 # these products.
 bin/instance1: \
-		requirements.txt env/bin/buildout \
+		$(BUILD_PREREQS) env/bin/buildout \
 		setup.py buildout.cfg profiles/*.cfg
 	env/bin/buildout
 
@@ -179,7 +179,7 @@ sql-client: build start-sql-server
 	$(SQL_DB_CLIENT) $(SQL_DB_CLIENT_ARGS)
 
 .PHONY: start-sql-server
-start-sql-server:
+start-sql-server: $(SQL_DB_INSTANCE)
 	$(MAKE) stop-sql-server
 ifeq ($(SQL_DB_TYPE),postgresql)
 	pg_ctl start $(SQL_DB_SERVER_ARGS)
