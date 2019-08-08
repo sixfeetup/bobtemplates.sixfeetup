@@ -217,8 +217,8 @@ ifneq ($(and $(DATA_DOWNLOAD),$(DATA_SQL_DB_SYNC)),)
 # you can use the following approach to use an askpass program, but it's
 # pretty cumbersome, much better all around to use a separate account:
 # https://unix.bris.ac.uk/2015/08/04/rsync-between-two-hosts-using-sudo-and-a-password-prompt/
-# DATA_RSYNC_OPTS += "-e 'ssh -X' \
-#	--rsync-path='SUDO_ASKPASS=/usr/bin/ssh-askpass sudo -A rsync'"
+# DATA_RSYNC_OPTS += -e 'ssh -X' \
+#	--rsync-path='SUDO_ASKPASS=/usr/bin/ssh-askpass sudo -A rsync'
 #	ssh -t $(DATA_SQL_DB_HOST) 'sudo -n true || sudo apt install ssh-askpass'
 	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
 		$(DATA_SQL_DB_HOST):$(DATA_SQL_DB_DIR)/ var/$(SQL_DB_TYPE)/
