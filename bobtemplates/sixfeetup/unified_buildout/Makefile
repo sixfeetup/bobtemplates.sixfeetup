@@ -109,7 +109,7 @@ TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
 build: bin/instance1
 
 .PHONY: data
-data: rsync-zodb
+data: data-zodb
 
 .PHONY: run
 ifdef MTA_LOCAL
@@ -258,13 +258,13 @@ ssh-copy-ids:
 	ssh -o "PasswordAuthentication no" -o "ConnectTimeout 5" \
 		$(DATA_ZODB_HOST) true || \
 		ssh-copy-id -o "ConnectTimeout 5" $(DATA_ZODB_HOST)
-.PHONY: rsync-zodb
-rsync-zodb: ssh-copy-ids data-targets.txt
+.PHONY: data-zodb
+data-zodb: ssh-copy-ids data-targets.txt
 	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
 		--files-from=data-targets.txt \
 		$(DATA_ZODB_HOST):$(DEPLOY_DIR)/ ./
 .PHONY: backup-data
-backup-data: rsync-zodb
+backup-data: data-zodb
 	rsync -va $(DATA_TARGETS) ./ ./var/bak/
 .PHONY: restore-data
 restore-data:
