@@ -76,8 +76,7 @@ define SQL_DB_CLIENT_ARGS =
 	"$(SQL_DB_NAME)" "$(SQL_DB_USER)"
 endef
 # Handle optional target prerequisites
-BUILD_PREREQS += $(SQL_DB_INSTANCE)
-RUN_PREREQS = start-sql-server
+BUILD_PREREQS += $(SQL_DB_INSTANCE) start-sql-server
 DATA_TARGETS += var/$(SQL_DB_TYPE)
 endif
 
@@ -98,7 +97,6 @@ define SQL_DB_CLIENT_ARGS =
 endef
 # Handle optional target prerequisites
 BUILD_PREREQS += var/$(SQL_DB_TYPE)/auto.cnf
-RUN_PREREQS = start-sql-server
 DATA_TARGETS += var/$(SQL_DB_TYPE)
 endif
 
@@ -121,7 +119,7 @@ else
 run: run-zope
 endif
 .PHONY: run-zope
-run-zope: $(RUN_PREREQS) build
+run-zope: build
 	scripts/control fg
 .PHONY: run-mta
 run-mta: env/bin/python
