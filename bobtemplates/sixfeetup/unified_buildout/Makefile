@@ -65,8 +65,14 @@ endif
 
 ## SQL DB settings for specific software
 
+ifdef SQL_DB_TYPE
+SQL_DB_DATA_DIR = var/$(SQL_DB_TYPE)
+SQL_DB_CLIENT = $(SQL_DB_TYPE)
+# Handle optional target prerequisites
+BUILD_PREREQS += $(SQL_DB_DATA_DIR) start-sql-server
+endif
+
 ifeq ($(SQL_DB_TYPE),postgresql)
-SQL_DB_INSTANCE = var/$(SQL_DB_TYPE)/PG_VERSION
 SQL_DB_CLIENT = psql
 define SQL_DB_SERVER_ARGS =
 	-D "var/$(SQL_DB_TYPE)/" -o '-c config_file="etc/$(SQL_DB_TYPE).conf"'
@@ -75,14 +81,9 @@ define SQL_DB_CLIENT_ARGS =
 	-h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 \
 	"$(SQL_DB_NAME)" "$(SQL_DB_USER)"
 endef
-# Handle optional target prerequisites
-BUILD_PREREQS += $(SQL_DB_INSTANCE) start-sql-server
-DATA_TARGETS += var/$(SQL_DB_TYPE)
 endif
 
 ifeq ($(SQL_DB_TYPE),mysql)
-SQL_DB_INSTANCE = var/$(SQL_DB_TYPE)/auto.cnf
-SQL_DB_CLIENT = $(SQL_DB_TYPE)
 define SQL_DB_SERVER_ARGS =
 	--skip-grant-tables \
 	--datadir=$(CHECKOUT_DIR)var/$(SQL_DB_TYPE) \
@@ -95,9 +96,6 @@ define SQL_DB_CLIENT_ARGS =
 	-S $(CHECKOUT_DIR)var/$(SQL_DB_TYPE)/$(SQL_DB_TYPE).sock \
 	-u "$(SQL_DB_USER)" --password="$(SQL_DB_PASSWD)" "$(SQL_DB_NAME)"
 endef
-# Handle optional target prerequisites
-BUILD_PREREQS += var/$(SQL_DB_TYPE)/auto.cnf
-DATA_TARGETS += var/$(SQL_DB_TYPE)
 endif
 
 TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
