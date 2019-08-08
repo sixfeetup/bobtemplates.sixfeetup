@@ -139,10 +139,8 @@ clean: clean-data
 .PHONY: clean-data
 clean-data:
 	scripts/control stop || true
-	for to_clean in $(TO_CLEAN); do \
-		rm -rf "$$to_clean.bak" && \
-		mv "$$to_clean" "$$to_clean.bak" || true; \
-	done
+	touch data-targets.txt
+	mv -f $(SQL_DB_INSTANCE) $(SQL_DB_INSTANCE).bak || true
 
 
 ## Real targets
