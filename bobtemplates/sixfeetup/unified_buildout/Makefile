@@ -68,6 +68,7 @@ endif
 ifdef SQL_DB_TYPE
 SQL_DB_DATA_DIR = var/$(SQL_DB_TYPE)
 SQL_DB_CLIENT = $(SQL_DB_TYPE)
+SQL_DB_CONF = $(SQL_DB_TYPE).conf
 # Handle optional target prerequisites
 BUILD_PREREQS += $(SQL_DB_DATA_DIR) start-sql-server
 endif
@@ -75,7 +76,7 @@ endif
 ifeq ($(SQL_DB_TYPE),postgresql)
 SQL_DB_CLIENT = psql
 define SQL_DB_SERVER_ARGS =
-	-D "var/$(SQL_DB_TYPE)/" -o '-c config_file="etc/$(SQL_DB_TYPE).conf"'
+	-D "var/$(SQL_DB_TYPE)/" -o '-c config_file="etc/$(SQL_DB_CONF)"'
 endef
 define SQL_DB_CLIENT_ARGS =
 	-h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 \
@@ -84,6 +85,7 @@ endef
 endif
 
 ifeq ($(SQL_DB_TYPE),mysql)
+SQL_DB_CONF = my.conf
 define SQL_DB_SERVER_ARGS =
 	--skip-grant-tables \
 	--datadir=$(CHECKOUT_DIR)var/$(SQL_DB_TYPE) \
@@ -189,7 +191,7 @@ ifeq ($(SQL_DB_TYPE),postgresql)
 	pg_ctl start $(SQL_DB_SERVER_ARGS)
 endif
 ifeq ($(SQL_DB_TYPE),mysql)
-	mysqld --defaults-extra-file=$(CHECKOUT_DIR)etc/my.cnf \
+	mysqld --defaults-extra-file=$(CHECKOUT_DIR)etc/$(SQL_DB_CONF) \
 		$(SQL_DB_SERVER_ARGS) &
 endif
 	sleep 1
