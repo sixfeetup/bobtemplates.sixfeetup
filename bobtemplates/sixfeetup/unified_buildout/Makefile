@@ -66,11 +66,11 @@ endif
 ## SQL DB settings for specific software
 
 ifdef SQL_DB_TYPE
-SQL_DB_DATA_DIR = var/$(SQL_DB_TYPE)
 SQL_DB_CLIENT = $(SQL_DB_TYPE)
 SQL_DB_CONF = $(SQL_DB_TYPE).conf
 # Handle optional target prerequisites
-BUILD_PREREQS += $(SQL_DB_DATA_DIR) start-sql-server
+BUILD_PREREQS += var/$(SQL_DB_TYPE) start-sql-server
+DATA_PREREQS = data-sql
 endif
 
 ifeq ($(SQL_DB_TYPE),postgresql)
@@ -80,7 +80,7 @@ define SQL_DB_SERVER_ARGS =
 endef
 define SQL_DB_CLIENT_ARGS =
 	-h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 \
-	"$(SQL_DB_NAME)" "$(SQL_DB_USER)"
+	"$(SQL_DB_NAME)"
 endef
 endif
 
@@ -109,7 +109,7 @@ TO_CLEAN = $(DATA_TARGETS) parts buildout.cfg env
 build: bin/instance1
 
 .PHONY: data
-data: data-zodb
+data: $(DATA_PREREQS) data-zodb
 
 .PHONY: run
 ifdef MTA_LOCAL
@@ -140,7 +140,8 @@ clean: clean-data
 clean-data:
 	scripts/control stop || true
 	touch data-targets.txt
-	mv -f $(SQL_DB_INSTANCE) $(SQL_DB_INSTANCE).bak || true
+	rm -rf "var/$(SQL_DB_TYPE)" && \
+		mv -f "var/$(SQL_DB_TYPE)" "var/$(SQL_DB_TYPE)".bak || true
 
 
 ## Real targets
@@ -181,11 +182,11 @@ bin/instance1: \
 # Optionally set up an isolated SQL DB instance
 
 .PHONY: sql-client
-sql-client: build start-sql-server
+sql-client: start-sql-server
 	$(SQL_DB_CLIENT) $(SQL_DB_CLIENT_ARGS)
 
 .PHONY: start-sql-server
-start-sql-server:
+start-sql-server: var/$(SQL_DB_TYPE)
 	$(MAKE) stop-sql-server
 ifeq ($(SQL_DB_TYPE),postgresql)
 	pg_ctl start $(SQL_DB_SERVER_ARGS)
@@ -206,49 +207,51 @@ ifeq ($(SQL_DB_TYPE),mysql)
 endif
 	sleep 1
 
-$(SQL_DB_INSTANCE):
+var/$(SQL_DB_TYPE):
 	$(MAKE) stop-sql-server
-ifneq ($(and $(DATA_DOWNLOAD),$(DATA_SQL_DB_SYNC)),)
-# If you can't get SSH access via an account that has sudo *without* password
-# you can use the following approach to use an askpass program, but it's
-# pretty cumbersome, much better all around to use a separate account:
-# https://unix.bris.ac.uk/2015/08/04/rsync-between-two-hosts-using-sudo-and-a-password-prompt/
-# DATA_RSYNC_OPTS += -e 'ssh -X' \
-#	--rsync-path='SUDO_ASKPASS=/usr/bin/ssh-askpass sudo -A rsync'
-#	ssh -t $(DATA_SQL_DB_HOST) 'sudo -n true || sudo apt install ssh-askpass'
-	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) --delete \
-		$(DATA_SQL_DB_HOST):$(DATA_SQL_DB_DIR)/ var/$(SQL_DB_TYPE)/
-	$(MAKE) start-sql-server
-else
-ifdef DATA_DOWNLOAD
-ifdef DATA_SQL_DB_DUMP_URL
-	wget --no-check-certificate -c -O "var/db-$(SQL_DB_NAME)-dump.sql.gz" \
-		"$(DATA_SQL_DB_DUMP_URL)"
-endif
-endif
 ifeq ($(SQL_DB_TYPE),postgresql)
 	pg_ctl initdb -D var/$(SQL_DB_TYPE)/
-endif
-ifeq ($(SQL_DB_TYPE),mysql)
-	mysqld --initialize-insecure $(SQL_DB_SERVER_ARGS)
-endif
 	$(MAKE) start-sql-server
-ifeq ($(SQL_DB_TYPE),postgresql)
 	createuser -h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 "$(SQL_DB_USER)"
 	createdb -h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 \
 		-O "$(SQL_DB_USER)" "$(SQL_DB_NAME)"
 endif
 ifeq ($(SQL_DB_TYPE),mysql)
+	mysqld --initialize-insecure $(SQL_DB_SERVER_ARGS)
+	$(MAKE) start-sql-server
 	echo "CREATE DATABASE $(SQL_DB_NAME); CREATE USER '$(DB_USER)'@'localhost' IDENTIFIED BY '$(DB_PASSWD)'; GRANT ALL PRIVILEGES ON *.* TO '$(DB_USER)'@'localhost'; FLUSH PRIVILEGES;" \
 		| sudo mysql -S $(CHECKOUT_DIR)var/mysql/mysql.sock \
 		|| ($(MAKE) stop-mysqld; rm -rf var/mysql; false)
 endif
-ifdef DATA_DOWNLOAD
+
+data-sql: var/$(SQL_DB_TYPE)
+# All SQL data options overwrite local changes,
+# so only proceed with DATA_OVERWRITE
+ifdef DATA_OVERWRITE
+ifdef DATA_SQL_DB_SYNC
+	$(MAKE) stop-sql-server
+# If you can't get SSH access via an account that has sudo *without* password
+# you can use the following approach to use an askpass program, but it's
+# pretty cumbersome, much better all around to use a separate account:
+# https://unix.bris.ac.uk/2015/08/04/rsync-between-two-hosts-using-sudo-and-a-password-prompt/
+#	ssh -t $(DATA_SQL_DB_HOST) 'sudo -n true || sudo apt install ssh-askpass'
+	rsync -vzPrlptD --inplace $(DATA_RSYNC_OPTS) \
+		--delete --exclude=*.conf --exclude=*.cnf --exclude=*.pid \
+		-e 'ssh -X' --rsync-path='SUDO_ASKPASS=/usr/bin/ssh-askpass sudo -A rsync' \
+		$(DATA_SQL_DB_HOST):$(DATA_SQL_DB_DIR)/ var/$(SQL_DB_TYPE)/
+	$(MAKE) start-sql-server
+ifeq ($(SQL_DB_TYPE),postgresql)
+# Make the current user a superuser
+	createuser -h "$(CHECKOUT_DIR)var/$(SQL_DB_TYPE)" -p 8432 -U postgres -s
+endif
+endif
 ifdef DATA_SQL_DB_DUMP_URL
+	$(MAKE) start-sql-server
+	wget --no-check-certificate -c -O "var/db-$(SQL_DB_NAME)-dump.sql.gz" \
+		"$(DATA_SQL_DB_DUMP_URL)"
 	gunzip --stdout "var/db-$(SQL_DB_NAME)-dump.sql.gz" | \
 		$(SQL_DB_CLIENT) $(SQL_DB_CLIENT_ARGS) \
 		|| ($(MAKE) stop-sql-server; rm -rf var/$(SQL_DB_TYPE); false)
-endif
 endif
 endif
 
@@ -264,8 +267,17 @@ data-zodb: ssh-copy-ids data-targets.txt
 		--files-from=data-targets.txt \
 		$(DATA_ZODB_HOST):$(DEPLOY_DIR)/ ./
 .PHONY: backup-data
-backup-data: data-zodb
-	rsync -va $(DATA_TARGETS) ./ ./var/bak/
+backup-data: data
+	rsync -va $(DATA_ZODB_RSYNC_FILES) ./ ./var/bak/
+ifdef SQL_DB_TYPE
+	rsync -va var/$(SQL_DB_TYPE) ./var/bak/
+endif
 .PHONY: restore-data
 restore-data:
-	rsync -va $(DATA_RSYNC_FILES) ./var/bak/ ./
+ifdef SQL_DB_TYPE
+	$(MAKE) stop-sql-server
+endif
+	rsync -va var/bak/ var/
+ifdef SQL_DB_TYPE
+	$(MAKE) start-sql-server
+endif
