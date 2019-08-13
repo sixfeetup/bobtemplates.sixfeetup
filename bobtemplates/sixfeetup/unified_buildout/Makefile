@@ -133,16 +133,18 @@ test: build
 .PHONY: clean
 clean: clean-data
 	for to_clean in $(TO_CLEAN); do \
-		rm -rf "$$to_clean.bak" && \
-		mv "$$to_clean" "$$to_clean.bak" || true; \
+		rm -rf "var/bak/$$to_clean" && \
+		mv "$$to_clean" "var/bak/$$to_clean" || true; \
 	done
 
 .PHONY: clean-data
 clean-data:
 	scripts/control stop || true
+	$(MAKE) stop-sql-server
 	touch data-targets.txt
-	rm -rf "var/$(SQL_DB_TYPE)" && \
-		mv -f "var/$(SQL_DB_TYPE)" "var/$(SQL_DB_TYPE)".bak || true
+	rm -rf "var/bak/var/$(SQL_DB_TYPE)" && \
+		mv -f "var/$(SQL_DB_TYPE)" "var/bak/var/$(SQL_DB_TYPE)" || \
+		true
 
 
 ## Real targets
