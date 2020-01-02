@@ -165,7 +165,7 @@ buildout.cfg: profiles/buildout.cfg.tmpl
 
 # Create an isolated python environment in `env/`.
 env:
-	virtualenv env --python=python2.7
+	virtualenv env --python=python3
 
 # Install the versions of zc.buildout and setuptools you need.
 env/bin/buildout: env requirements.txt

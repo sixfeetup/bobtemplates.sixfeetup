@@ -79,7 +79,7 @@ recipe = plone.recipe.plone < 3.2-dev
 {{% if pre_plone4 %}}
 [zope2]
 # Allow i18ndude to install properly
-skip-fake-eggs += 
+skip-fake-eggs +=
     zope.interface
 
 {{% endif %}}
@@ -88,7 +88,11 @@ http-address = {{{ development_port }}}
 zeo-address = {{{ development_port + 2000 }}}
 debug-mode = on
 verbose-security = on
+{{% if pre_plone52 %}}
 event-log-level = debug
+{{% else %}}
+event-log-level = DEBUG
+{{% endif %}}
 eggs += ${debugging:eggs}
 {{% if plone_version == '3.1' %}}
 zcml += ${debugging:zcml}
@@ -101,22 +105,12 @@ zcml += ${debugging:zcml}
 
 [plonesite]
 # install some debug products automagically
-profiles += 
+profiles +=
 #    collective.workflowed:default
 #    plone.app.gloworm:default
 {{% if not pre_plone4 %}}
     plone.app.debugtoolbar:default
 {{% endif %}}
-
-# installs paster and Zopeskel
-[zopeskel]
-recipe = zc.recipe.egg
-eggs =
-    ${instance1:eggs}
-    PasteScript
-    ZopeSkel
-    templer.dexterity
-    templer.plone.localcommands
 
 [i18ndude]
 recipe = zc.recipe.egg

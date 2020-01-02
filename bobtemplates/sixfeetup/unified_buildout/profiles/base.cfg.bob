@@ -4,10 +4,10 @@ find-links =
     http://dist.plone.org/thirdparty/
     http://effbot.org/downloads
 
-# add in the setuptools fixer so that a rogue package
-# can't break the buildout
 extensions =
+{{% if pre_plone52 %}}
     jarn.setuptoolsfixer
+{{% endif %}}
     mr.developer
 
 # we set up base-parts so that we can add in parts in other configs
@@ -97,8 +97,10 @@ blob-storage = ${zeoserver:blob-storage}
 eggs =
     Pillow
     Plone
+{{% if pre_plone52 %}}
 # Make the signal stack always available
     Products.signalstack
+{{% endif %}}
 {{% if plone_version == '3.1' %}}
     ${plone:eggs}
     elementtree

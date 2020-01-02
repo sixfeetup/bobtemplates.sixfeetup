@@ -8,7 +8,7 @@
   <include package="collective.transmogrifier" file="meta.zcml"/>
 
   <transmogrifier:registerConfig
-      name="{{{ project_name }}}.import_content"
+      name="{{{ project_name }}}_import_content"
       title="{{{ project_name }}}.migration (import)"
       description="This pipeline imports content into a Plone site"
       configuration="import_content.cfg"

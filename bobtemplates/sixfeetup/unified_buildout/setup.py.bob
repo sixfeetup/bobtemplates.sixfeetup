@@ -37,6 +37,7 @@ setup(
 {{% if include_migration %}}
         'collective.jsonmigrator',
         'transmogrify.dexterity',
+        'collective.transmogrifier',
 {{% endif %}}
 {{% if include_theme %}}
         'z3c.jbot',

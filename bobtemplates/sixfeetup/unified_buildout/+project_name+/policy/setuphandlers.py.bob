@@ -27,4 +27,6 @@ def importVarious(context):
     sfutils.runPortalMigration()
     # automagically run the upgrade steps for this package
     sfutils.runUpgradeSteps(u'{{{ project_name }}}.policy:default')
+    {{% if pre_plone5 %}}
     sfutils.refreshAssetRegistry()
+    {{% endif %}}

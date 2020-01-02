@@ -59,10 +59,13 @@ def _set_plone_version_variables(configurator, version):
     configurator.variables['is_plone4'] = False
     configurator.variables['pre_plone4'] = False
     configurator.variables['pre_plone5'] = False
+    configurator.variables['pre_plone52'] = False
     configurator.variables['pyflakes_version'] = 'pyflakes'
     # Find out if it is supposed to be Plone 5.
     if version.startswith('5'):
         configurator.variables['is_plone5'] = True
+        if version < '5.2':
+            configurator.variables['pre_plone52'] = True
     elif version.startswith('4'):
         configurator.variables['pre_plone5'] = True
         configurator.variables['is_plone4'] = True
@@ -137,7 +140,9 @@ def cleanup_package(configurator):
     # Plone 5 doesn't use the properties.xml anymore
     if configurator.variables['is_plone5']:
         to_delete.extend([
-            "{0}/policy/profiles/qa/properties.xml"
+            "{0}/policy/profiles/qa/properties.xml",
+            "{0}/theme/profiles/default/cssregistry.xml",
+            "{0}/theme/profiles/default/jsregistry.xml",
         ])
 
     # remove parts

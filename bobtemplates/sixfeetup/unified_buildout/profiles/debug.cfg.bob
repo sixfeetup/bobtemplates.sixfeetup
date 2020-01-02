@@ -15,10 +15,12 @@ parts =
 #     http://<zope host>:<zope port>/++resource++recorder/index.html
 eggs =
     plone.reload
-    Products.PDBDebugMode<1.4
+    Products.PDBDebugMode
     Products.PrintingMailHost
+{{% if pre_plone52 %}}
     Products.DocFinderTab
     Products.DCWorkflowGraph
+{{% endif %}}
 {{% if not pre_plone4 %}}
     plone.app.debugtoolbar
 {{% endif %}}
@@ -78,14 +80,14 @@ scripts = zopepy
 # identifying common errors quickly without executing Python code.
 # pep8 is a tool to check your Python code against some of the style
 # conventions in PEP 8.
-[pylint] 
-recipe = zc.recipe.egg 
+[pylint]
+recipe = zc.recipe.egg
 eggs =
     pylint
     ${instance1:eggs}
-entry-points = pylint=pylint.lint:Run 
+entry-points = pylint=pylint.lint:Run
 scripts = pylint
-arguments = [ 
+arguments = [
     '--output-format=colorized',
     '--zope=y',
     '--reports=no',
