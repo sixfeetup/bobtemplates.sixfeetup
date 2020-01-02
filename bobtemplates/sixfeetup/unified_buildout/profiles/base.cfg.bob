@@ -29,7 +29,7 @@ parts = ${buildout:base-parts}
 # List of cron jobs, usually applied in release configurations like
 # prod. We default the value here so we can add it into the list of
 # parts.
-cronjobs = 
+cronjobs =
 
 # Extend the version config file
 extends =
@@ -67,8 +67,8 @@ url = ${versions:zope2-url}
 {{% endif %}}
 {{% if plone_version == '3.1' %}}
 fake-zope-eggs = true
-skip-fake-eggs = 
-additional-fake-eggs = 
+skip-fake-eggs =
+additional-fake-eggs =
     ZODB3
     ZConfig
     pytz
@@ -109,7 +109,7 @@ eggs =
 #    {{{ project_name }}}.policy
 {{% endif %}}
 {{% if plone_version == '3.1' %}}
-products = 
+products =
     ${plone:products}
 {{% endif %}}
 
@@ -117,7 +117,7 @@ products =
 default-zpublisher-encoding = utf-8
 
 # set the timezone at a bare MINIMUM
-environment-vars = 
+environment-vars =
     TZ America/New_York
     PYTHON_EGG_CACHE ${buildout:directory}/var/.python-eggs
     PTS_LANGUAGES en
@@ -154,7 +154,7 @@ command = ${buildout:bin-directory}/zeopack
 recipe = z3c.recipe.usercrontab
 # Once a week on Monday at midnight
 times = 0 0 * * 1
-command = ${buildout:bin-directory}/fullbackup
+command = ${buildout:bin-directory}/backup
 
 [plonesite]
 recipe = collective.recipe.plonesite
