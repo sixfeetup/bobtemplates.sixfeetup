@@ -1,66 +1,73 @@
-bobtemplates.unified_buildout
-=============================
+# bobtemplates.unified_buildout
 
-``bobtemplates.sixfetup`` provides a `mr.bob <http://mrbob.readthedocs.org/en/latest/>`_ ``unified_buildout`` template to generate a buildout for Plone based projects.
+`bobtemplates.sixfetup` provides a [mr.bob](http://mrbob.readthedocs.org/en/latest/) `unified_buildout` template to generate a buildout for Plone based projects.
 
 
-Features
---------
+## Features
 
 The project created with ``bobtemplates.sixfeetup`` use the current Six Feet Up deployment best-practices when creating an project.
 
-Buildout
-    The package is contained in a buildout that allows you to build Plone with the new package installed for testing-purposes.
+**Buildout**
 
-Policy
-    The package contains a policy package.
+The package is contained in a buildout that allows you to build Plone with the new package installed for testing-purposes.
 
-Theme
-    Adds a Diazo theme package based on Barceloneta.
+**Policy**
 
-Content
-    Adds a content package for new Dexterity based content types.
+The package contains a policy package.
 
-Migration
-    A starting point for creating a transmogrifier import pipeline.
+**Theme**
+
+Adds a Diazo theme package based on Barceloneta.
+
+**Content**
+
+Adds a content package for new Dexterity based content types.
+
+**Migration**
+
+A starting point for creating a transmogrifier import pipeline.
 
 
-Installation
-------------
+## Installation
 
-Installation in a virtualenv
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Installation in a virtualenv**
 
-You can install ``bobtemplates.sixfeetup`` in a virtualenv.::
+You can install `bobtemplates.sixfeetup` in a virtualenv.
     
-    $ pip install bobtemplates.sixfeetup
+```shell
+$ pip install bobtemplates.sixfeetup
+```
 
-With ``pip 6.0`` or newer ``mr.bob`` will automatically be installed as a dependency. If you still use a older version of pip you need install ``mr.bob`` before ``bobtemplates.sixfeetup``.::
+With `pip 6.0` or newer `mr.bob` will automatically be installed as a dependency. If you still use a older version of pip you need install `mr.bob` before `bobtemplates.sixfeetup`.
 
-    $ pip install mr.bob
+```shell
+$ pip install mr.bob
+```
 
-Now you can use it like this::
+Now you can use it like this
 
-    $ mrbob -O myproject bobtemplates.sixfeetup:unified_buildout
+```shell
+$ mrbob -O myproject bobtemplates.sixfeetup:unified_buildout
+```
 
-See `the documentation of mr.bob <http://mrbob.readthedocs.org/en/latest/>`_  for further information.
+See [the documentation of mr.bob](http://mrbob.readthedocs.org/en/latest/) for further information.
 
 
-Development
------------
+## Development
 
 To contribute to these templates, clone the repository then in the package folder create a virtualenv and install the package::
 
-    $ make
+```shell
+$ make
+```
 
 
-Contribute
-----------
+## Contribute
 
 - Issue Tracker: https://github.com/sixfeetup/bobtemplates.sixfeetup/issues
 - Source Code: https://github.com/sixfeetup/bobtemplates.sixfeetup
 
-Support
--------
+
+## Support
 
 If you are having issues, please let us know.
