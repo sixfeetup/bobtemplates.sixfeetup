@@ -2,7 +2,6 @@
 <metadata>
     <version>0001</version>
     <dependencies>
-        <dependency>profile-plone.app.contenttypes:default</dependency>
 {{% if include_content  %}}
         <dependency>profile-{{{ project_name }}}.content:default</dependency>
 {{% endif %}}
