@@ -7,9 +7,9 @@ version = '2.0'
 
 
 long_description = '\n\n'.join([
-    open('README.rst').read(),
-    open('CONTRIBUTORS.rst').read(),
-    open('CHANGES.rst').read(),
+    open('README.md').read(),
+    open('CONTRIBUTORS.md').read(),
+    open('CHANGES.md').read(),
 ])
 
 
