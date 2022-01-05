@@ -39,6 +39,9 @@ setup(
         'transmogrify.dexterity',
         'collective.transmogrifier',
 {{% endif %}}
+{{% if include_cloudfront %}}
+        'collective.cloudfront',
+{{% endif %}}
 {{% if include_theme %}}
         'z3c.jbot',
         'plone.app.themingplugins',

@@ -1,0 +1,18 @@
+<registry>
+  <record name="plone.mark_special_links" interface="Products.CMFPlone.interfaces.controlpanel.ILinkSchema" field="mark_special_links">
+    <value>False</value>
+  </record>
+{{% if include_cloudfront %}}
+  <record name="collective.cloudfront.browser.interfaces.ICloudFrontConfiguration.aws_access_key_id" interface="collective.cloudfront.browser.interfaces.ICloudFrontConfiguration" field="aws_access_key_id">
+    <value>REPLACE</value>
+  </record>
+
+  <record name="collective.cloudfront.browser.interfaces.ICloudFrontConfiguration.aws_secret_access_key" interface="collective.cloudfront.browser.interfaces.ICloudFrontConfiguration" field="aws_secret_access_key">
+    <value>REPLACE</value>
+  </record>
+
+  <record name="collective.cloudfront.browser.interfaces.ICloudFrontConfiguration.distribution_id" interface="collective.cloudfront.browser.interfaces.ICloudFrontConfiguration" field="distribution_id">
+    <value>REPLACE</value>
+  </record>
+{{% endif %}}
+</registry>
