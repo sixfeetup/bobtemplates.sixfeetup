@@ -1,0 +1,17 @@
+# Make sure Unauthorized stays in ignored exceptions
+from Testing.makerequest import makerequest
+import transaction
+import logging
+
+logger = logging.getLogger("Buildout scripts")
+
+portal = makerequest(app.{{{ site_name }}})
+ignored = portal.error_log._ignored_exceptions
+UNAUTHORIZED = 'Unauthorized'
+
+if UNAUTHORIZED not in ignored:
+    logger.info("Adding Unauthorized back to list of ignored_exceptions")
+    portal.error_log._ignored_exceptions = ignored + (UNAUTHORIZED,)
+    transaction.commit()
+else:
+    logger.info("Unauthorized already in list of ignored_exceptions")
