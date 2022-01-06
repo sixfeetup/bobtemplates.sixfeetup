@@ -1,2 +1,2 @@
 zc.buildout
-maildump
+setuptools<46
