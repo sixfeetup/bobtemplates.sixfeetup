@@ -18,6 +18,7 @@ setup(
     version=version,
     description="Unified buildout template for Plone projects.",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     classifiers=[
         "Environment :: Console",
         "Intended Audience :: Developers",
