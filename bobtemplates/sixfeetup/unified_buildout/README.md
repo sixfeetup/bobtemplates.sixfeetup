@@ -374,7 +374,7 @@ extra time.
 
 There are ways to parameterize and share code between recipes when multiple
 developers are doing similar but different tasks, see below in 
-[How to add or change targets](https://github.com/sixfeetup/bobtemplates.sixfeetup/blob/master/bobtemplates/sixfeetup/unified_buildout/README.md#how-to-add-or-change-targets).
+[How to add or change targets](#how-to-add-or-change-targets).
 OTOH, if you're going too far down either of those routes it's probably a
 sign that the task is a real requirement, not the kind of ad-hoc task our 
 use of `Makefile` is intended for.  In that case, it's time to move such a
