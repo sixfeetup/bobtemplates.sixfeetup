@@ -1,0 +1,7 @@
+<registry>
+{{% if include_cloudfront %}}
+  <record name="collective.cloudfront.browser.interfaces.ICloudFrontConfiguration.distribution_id" interface="collective.cloudfront.browser.interfaces.ICloudFrontConfiguration" field="distribution_id">
+    <value>REPLACE</value>
+  </record>
+{{% endif %}}
+</registry>

@@ -1,0 +1,16 @@
+{{% if include_cloudfront %}}
+from collective.cloudfront.events import purge_cache
+
+class Site(object):
+    def absolute_url_path(self):
+        return '/*'
+
+the_site = Site()
+purge_cache(the_site, None)
+{{% else %}}
+from z3c.caching.purge import Purge
+from Testing.makerequest import makerequest
+
+portal = makerequest(app.{{{ site_name }}})
+Purge(portal)
+{{% endif %}}

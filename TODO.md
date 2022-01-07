@@ -1,5 +1,4 @@
-TODO
-====
+# TODO
 
 - add question for License and update setup.py.bob
 - make option for plone 5 registries replacement of props tool

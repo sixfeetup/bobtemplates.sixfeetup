@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 version = "0.1"
 
-long_description = (open('README.rst').read())
+long_description = (open('README.md').read())
 
 setup(
     name='{{{ project_name }}}',
@@ -38,6 +38,9 @@ setup(
         'collective.jsonmigrator',
         'transmogrify.dexterity',
         'collective.transmogrifier',
+{{% endif %}}
+{{% if include_cloudfront %}}
+        'collective.cloudfront',
 {{% endif %}}
 {{% if include_theme %}}
         'z3c.jbot',

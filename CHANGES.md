@@ -1,8 +1,6 @@
-Changelog
-=========
+# Changelog
 
-2.0 (2020-01-02)
-------------------
+## 2.0 (2020-01-02)
 
 - Set up for Plone 5.2/Python3
   [cdw9]
@@ -13,8 +11,8 @@ Changelog
 - Fixes for when a theme is not added
   [abosio]
 
-1.1 (2018-08-25)
-------------------
+
+## 1.1 (2018-08-25)
 
 - Set up Gulp for theme
   [abosio]
@@ -26,8 +24,7 @@ Changelog
   [cdw9]
 
 
-1.0 (2016-09-12)
-------------------
+## 1.0 (2016-09-12)
 
 - Initial Release
   [calvinhp]
