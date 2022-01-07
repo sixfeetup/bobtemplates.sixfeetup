@@ -1,5 +1,20 @@
 # Using a custom buildout
 
+## Setting up Python
+
+Please use [pyenv](https://github.com/pyenv/pyenv) to install and/or set 
+a version of Python local to this directory for use with Plone before 
+using Make commands below.
+
+Do not use your system Python.
+
+- Plone 5.2 can use Python 2.7.14, 3.6, and 3.7 (3.7 is recommended for
+  new projects)
+- Plone 4-5.1.x requires Python 2.7
+
+
+## Using Make
+
 The `Makefile` should build the local development environment, optionally
 copy the project data, and start all the processes necessary to work with the
 site on `localhost`.  See the comments under `Project-specific variables`
@@ -24,27 +39,6 @@ via the `Makefile`.
 ## Installing PIL
 
 The buildout will install PIL for you (via the Pillow egg)
-
-## Using a different Python installation
-
-Buildout will use your system Python installation by default. However, Zope
-2.10 (and by extension, Plone) will only work with Python 2.4. You can verify
-which version of Python you have, by running:
-
-```shell
-$ python -V
-```
-
-If that is not a 2.4 version, you need to install Python 2.4 from
-http://python.org. If you wish to keep another version as your main system
-Python, edit buildout.cfg and add an 'executable' option to the "[buildout]"
-section, pointing to a python interpreter binary:
-
-```
-[buildout]
-...
-executable = /path/to/python
-```
 
 ## Working with buildout.cfg
 
