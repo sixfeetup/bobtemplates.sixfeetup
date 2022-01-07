@@ -54,6 +54,35 @@ versions online:
 $ bin/buildout -Nov
 ```
 
+## Release Information
+
+_Update this section for project specifics._
+
+### Release to Sandbox
+
+```shell
+$ ssh [server address]
+$ cd /data/[buildout_directory]
+$ sudo -u zope git pull
+$ sudo -u zope venv/bin/buildout
+$ supervisorctl restart all
+$ sudo systemctl restart varnish
+```
+
+### Release to Production
+
+```shell
+$ ssh [server address]
+$ cd /data/[buildout_directory]
+$ sudo -u zope tar -czf /data/prod_data/[projectname]-prod-`date +%Y-%m-%d-%s`.tgz -C
+  /data/[buildout_directory]/var/ filestorage/Data.fs filestorage/Data.fs.index blobstorage
+$ sudo -u zope git pull
+$ sudo -u zope venv/bin/buildout
+$ supervisorctl restart all
+$ sudo systemctl restart varnish
+```
+
+
 ## Extending buildout configs
 
 This buildout makes use of the 'extends' functionality of buildout.  The
