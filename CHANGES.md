@@ -1,5 +1,11 @@
 # Changelog
 
+2.2 (unreleased)
+----------------
+
+- Nothing changed yet.
+
+
 ## 2.1 (2021-01-07)
 
 - convert docs from RST to MD
